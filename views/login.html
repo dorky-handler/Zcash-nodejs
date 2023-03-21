@@ -1,0 +1,42 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<title>
+Zcash Login
+</title>
+</head>
+<body>
+<input type="text" id="uname" placeholder="username"></input>
+<input type="password" id="pwd"></input>
+<button id="btn" >Submit </button>
+<script>
+$(document).ready(function(){
+$("#btn").on("click" , function(e) {
+	e.preventDefault();
+    $.ajax({
+     contentType: 'application/json',   
+type: "POST",
+        url: location.protocol+"//"+location.host+"/login",
+        data: JSON.stringify({
+            name: $("#uname").val(),
+            password: $("#pwd").val() 
+        }),
+	datatype: 'json',
+        success: function(result) {
+//window.location.replace('http://zcash.local:3000/dashboard');
+if(result.error)
+alert(result.message);
+else
+window.location.replace(location.protocol+"//"+location.host);        
+},
+        error: function(result) {
+            alert('error');
+        }
+    });
+});
+});
+
+</script>
+</body>
+</html>
+
