@@ -1,0 +1,861 @@
+<html>
+    <head>
+        <title>Zcash node Wallet</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+        <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+      </head>
+    <body>
+        <div class="main-container d-flex">
+          <div class="sidebar" id="side_nav">
+            <div class="header-box px-2 pt-3 pb-4 d-flex justify-content-between">
+              <h1 class="fs-4"><span class="bg-white text-darkblue rounded shadow px-2 me-2">Z</span><span class="text-white">Zcash Node</span></h1>
+            <button class="btn d-md-none d-block close-btn px-1 py-0 text-white"><i class="fa-solid fa-bars"></i></button>
+            </div>
+            <ul class="list-unstyled px-2 lsb">
+              <li class="slowcolor"><a href="#" class="text-decoration-none px-3 py-2 d-block"><i class="fa-sharp fa-solid fa-house fa-fw"></i>Dashboard</a></li>
+              <li class=" slowcolor"><a href="#" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-gear fa-fw"></i>Settings</a></li>
+              <li class="active slowcolor"><a href="#" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-wallet fa-fw"></i>Wallet</a></li>
+              <li class="slowcolor"><a href="#" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-network-wired fa-fw"></i>Web-SSH</a></li>
+            </ul>
+            <!-- made by animal spirits -->
+            </div>
+<div class="content">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" id="topname">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between d-md-none d-block">
+      <a class="navbar-brand fs-4" href="#">Zcash node</a>
+      <button class="btn px-1 py-0 open-btn"><i class="fa-solid fa-bars"></i></button>
+    </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav  mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">logout</a>
+          </li>
+          
+          
+        </ul>
+        
+      </div>
+    </div>
+  </nav>
+  <div class="row head-box d-flex">
+    <div class="bg-blue "><i class="fa-solid fa-wallet"></i>
+     
+    </div>
+    <div class="col col-md-auto ">
+    <h4>Wallet</h4>
+    
+  </div>
+  <hr class="my-4" />
+  </div>
+  <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8 mx-auto">
+            
+            <div class="my-0">
+                
+                
+                
+                
+                <div class="row justify-content-center p-3">
+               
+		 <div class="col-6">
+                    <button id="importbkp" class="btn btn-copy btn-primary mb-4 ">
+                      Import wallet <i class="fa-solid fa-file-import"></i>
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <button id="walletbkp" class="btn btn-copy btn-primary mb-4">
+                      Export wallet <i class="fa-solid fa-file-export"></i>
+                    </button>
+                  </div>
+                  <div class="col-12 my-3">
+                  <select id="walletlist" class="form-select form-select-lg custom-sel" aria-label=".form-select-lg example" placeholder="Select address from wallet">
+                   <option value="" hidden selected disabled>Select address from wallet</option>
+                     </select>
+                </div>
+                <div class="col-md-3 my-2">
+                  <button id="newaddress" class="btn btn-copy btn-primary ">
+                   New address <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                <div class="col-md-3 my-2">
+                  <button id="receivebtn" class="btn btn-copy btn-primary ">
+                    Receive funds<i class="fa-solid fa-copy"></i>
+                  </button>
+                </div>
+                <div class="col-md-3 my-2">
+                  <button id="txnhistory" class="btn btn-copy btn-primary ">
+                    Transaction history <i class="fa-solid fa-clock-rotate-left"></i>
+                  </button>
+                </div>
+                </div>
+                  <div class="row m-3 px-4 mx-4 justify-content-center">
+                   <div class="col-md-3 tend">
+                 <h4 class="mb-0 "> <svg style="color: rgb(94, 0, 181);height:1.5em;" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Zcash</title><path d="M12 0C5.382 0 0 5.382 0 12s5.382 12 12 12 12-5.382 12-12S18.618 0 12 0zm0 22.02C6.474 22.02 1.98 17.526 1.98 12S6.474 1.98 12 1.98 22.02 6.474 22.02 12 17.526 22.02 12 22.02zm4.28-13.763V6.431h-3.274V4.42h-2.012V6.43H7.72v2.423h5.079l-5.08 6.889v1.826h3.275v2.002h2.012v-2.002h3.275v-2.422H11.2z" fill="#5e00b5"></path></svg>  
+                    Balance : </h4></div>
+                    <div class="col-md-9 tcent"><h2 id="balance" class="mb-0"></h2></div>
+                  </div>
+
+                  <div class="row m-1 mt-3 mb-3">
+                    <h3 style="color: #5e00b5!important;">Send Zcash : </h3>
+                  </div>
+
+                <div class="list-group mb-5 shadow">
+                    <div class="list-group-item px-4 pt-4">
+                        <div class="row align-items-center input-box px-4">
+                          <div class="input-field px-4">
+                            <input type="text" class="input" id="toaddr" required="" autocomplete="off">
+                            <label for="toaddr">To Address</label>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item pt-4 px-4">
+                      <div class="row align-items-center input-box px-4">
+                        <div class="col-11">
+                        <div class="input-field px-4">
+                          <input type="number" class="input" id="amt" required="" autocomplete="off">
+                          <label for="amt">Amount</label>
+                      </div>
+                    </div>
+                    <div class="col-1">
+                      <button id="max" class="btn btn-primary rounded-pill">Max</button>
+                    </div>
+                      </div>
+                  </div>
+                  <div class="list-group-item pt-4 px-4">
+                    <div class="row align-items-center input-box px-4">
+                      <div class="col-11">
+                      <div class="input-field px-4">
+                        <input type="number" class="input" id="txnfees" disabled="disabled" autocomplete="off">
+                        <label for="txnfees">Transaction fees</label>
+                    </div>
+                  </div>
+                  <div class="col-1">
+                  <div class="form-check form-switch">
+  		  <input id="txnchk" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+			<label class="form-check-label" for="flexSwitchCheckDefault"></label>
+		  </div> 
+                  </div>
+                    </div>
+                </div>
+              
+                </div>
+                <div class="row m-4">
+                  <div class="btn-group">
+                  <button id="sendfund" class="btn btn-primary mb-4 mx-4 btn-lg btn-block">Send</button>
+              
+              
+                <button class="btn btn-danger mb-4 mx-4 btn-lg btn-block">Reset</button>
+              </div>
+              </div>
+               
+             
+            </div>
+        </div>
+    </div>
+    
+    </div>
+</div>
+</div>
+
+<div class="modal fade" id="receivemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Deposit address</h5>
+      </div>
+      <div class="modal-body">
+       <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link navbtn active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">UA</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link navbtn" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Transparent</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link navbtn" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Shielded</button>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><div class="d-flex justify-content-center my-3"><div id="qrcodeua"></div></div><div class="d-flex justify-content-center my-3"><div id="uaid" class="mb-0"></div></div></div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab"><div class="d-flex justify-content-center my-3"><div id="qrcodetransparent"></div></div><div class="d-flex justify-content-center my-3"><div id="transid" class="mb-0"></div></div></div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab"><div class="d-flex justify-content-center my-3"><div id="qrcodeshielded"></div></div><div class="d-flex justify-content-center my-3"><div id="shieldedid" class="mb-0"></div></div></div>
+</div>
+      </div>
+      <div class="modal-footer">
+        <button id="closemodal" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="txnmodal" tabindex="-1" role="dialog" aria-labelledby="txnmodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Transactions</h5>
+      </div>
+      <div id="txbody" class="modal-body">
+
+
+</div>
+      <div class="modal-footer">
+        <button id="closemodal1" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="shieldmodal" tabindex="-1" role="dialog" aria-labelledby="shieldmodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Shielding confirmation</h5>
+      </div>
+      <div id="txbody" class="modal-body">
+<h3>
+Confirm shielding amount 0.03z from tdhjh2h1kh12k3ehrbjkknj ?
+</h3>
+
+</div>
+      <div class="modal-footer">
+	<button id="shcnfbtn" type="button" class="btn btn-primary">Shield funds</button>
+        <button id="closemodal2" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+$(document).ready(function()
+{
+var ualist=[],addlist=[],sapbal=0,trbal=0,orbal=0;
+
+$("#closemodal").on('click' , function() {
+
+$('#receivemodal').modal('hide');
+
+});
+
+
+$("#closemodal1").on('click' , function() {
+
+$('#txnmodal').modal('hide');
+
+});
+
+
+$("#txnchk").change(function() {
+     if(this.checked)
+         $("#txnfees").prop('disabled', false);
+    else 
+     $("#txnfees").prop('disabled', true);   
+
+$("#txnfees").blur();
+});
+
+$("#max").on('click' , function() {
+
+var zec = orbal+trbal+sapbal;
+$("#amt").val(zec);
+});
+
+$("#importbkp").on('click' , function() {
+
+var input = document.createElement("input");
+                input.type = "file";
+                input.setAttribute("id", "inpfile");
+  input.click();
+input.addEventListener('change', function() { 
+              
+            var fr=new FileReader(); 
+            fr.onload=function(){ 
+ 
+var ll = fr.result.split(/\r?\n/);
+if(ll[ll.length-2]==="# End of dump")
+{
+alert("Uploading file");
+console.log(fr.result);
+$.ajax({
+     contentType: 'application/json',
+        type: "POST",
+        url: location.protocol+"//"+location.host+"/walletimport",
+        data: JSON.stringify({
+            input: fr.result
+            }),
+        datatype: 'json',
+        success: function(result) {
+               if(result.error=="false")
+                {
+                
+		}
+		else
+                alert(result.message.error);
+                },
+        error: function(result) {
+            alert('error');
+        }
+});
+
+}
+else
+alert("Invalid fie");
+            } 
+              
+            fr.readAsText(this.files[0]); 
+        }) 
+
+  
+});
+
+
+$("#receivebtn").on('click' , function() {
+if($("#walletlist").find(":selected").val()=="")
+alert("Select and address from the list");
+else
+{
+$.ajax({
+     contentType: 'application/json',
+        type: "POST",
+        url: location.protocol+"//"+location.host+"/addresslist",
+        data: JSON.stringify({
+            ua: $("#walletlist").find(":selected").val()
+            }),
+        datatype: 'json',
+        success: function(result) {
+               if(result.error=="false")
+		{
+                //console.log(result.message.result);
+		$("#qrcodeua").html("");
+                var qrcode = new QRCode(document.getElementById("qrcodeua"), {
+	text: $("#walletlist").find(":selected").val(),
+	width: 128,
+	height: 128,
+	colorDark : "#0f1f2b",
+	colorLight : "#ffffff",
+	correctLevel : QRCode.CorrectLevel.L
+});
+$("#qrcodetransparent").html("");
+		$("#uaid").html($("#walletlist").find(":selected").val());
+var qrcode1 = new QRCode(document.getElementById("qrcodetransparent"), {
+        text: result.message.result.p2pkh,
+        width: 128,
+        height: 128,
+        colorDark : "#0f1f2b",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.L
+});
+$("#transid").html(result.message.result.p2pkh);
+$("#qrcodeshielded").html("");
+var qrcode2 = new QRCode(document.getElementById("qrcodeshielded"), {
+        text: result.message.result.sapling,
+        width: 128,
+        height: 128,
+        colorDark : "#0f1f2b",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.L
+});
+$("#shieldedid").html(result.message.result.sapling);
+		}
+		else
+                alert(result.message.error);
+                },
+        error: function(result) {
+            alert('error');
+        }
+    });
+
+$('#receivemodal').modal('show');
+
+}
+});
+
+$('#walletlist').on('change', function() {
+var addr = $( "#walletlist option:selected" ).text();   
+function isua(ary) {
+  return ary.addresses[0].ua === $("#walletlist").find(":selected").val();
+}
+var acct = (ualist.result.find(isua));
+$.ajax({
+     contentType: 'application/json',
+	type: "POST",
+        url: location.protocol+"//"+location.host+"/balance",
+        data: JSON.stringify({
+            account: acct.account
+            }),
+        datatype: 'json',
+        success: function(result) {
+               if(result.error==null)
+                {
+		var tbal=0,obal=0,sbal=0;
+		var btstart = "<button class=\"btn btn-primary rounded-pill m-1\">";
+		var btend = "</button>";
+		if(result.result.pools.sapling!==undefined)
+		sbal=result.result.pools.sapling.valueZat/100000000;
+		if(result.result.pools.transparent!==undefined)
+                tbal=result.result.pools.transparent.valueZat/100000000; 
+		if(result.result.pools.orchard!==undefined)
+                obal=result.result.pools.orchard.valueZat/100000000; 
+		$("#balance").html(btstart+"Transparent : "+tbal+" Zec"+btend+btstart+"Sapling : "+sbal+" Zec"+btend+btstart+"Orchard : "+obal+btend);
+		if(tbal>0)
+		$("#balance").append("<button id=\"shieldfndbtn\" class=\"btn btn-primary rounded-pill m-1\">Shield funds</button>");
+		orbal = obal;sapbal=sbal;trbal=tbal;
+		}
+		else 
+		alert(result.error.message);
+                },
+        error: function(result) {
+            alert('error');
+        }
+    });
+});
+
+
+$("#txnhistory").on("click" , function(e) {
+if($("#walletlist").find(":selected").val()=="")
+alert("Select and address from the list");
+else
+$.ajax({
+  url: location.protocol+"//"+location.host+"/txnhistory",
+  type: 'POST',
+  data: JSON.stringify({
+            from: $("#walletlist").find(":selected").val()
+              }),
+  processData: false,
+  contentType: false,
+  success: function(result) {       
+	if(result.error=="false")
+                {
+		  var appendstr="",result=result.message.result,ele;
+		  for(var i=0;i<result.length;i++)
+			{
+				if(result[i].params.fromaddress==$("#walletlist").find(":selected").val())
+				{
+					var msg ="" , msgid = "";
+					if(result[i].status=="failed")
+					{
+						msg = result[i].error.message;msgid="Message : ";
+					}
+					if(result[i].status=="success")
+                                        {
+                                                msg = "<a href=\"https://zcashblockexplorer.com/transactions/"+result[i].result.txid+"\">"+result[i].result.txid+"</a>";msgid="Transaction : ";
+                                        }
+					appendstr+=ele = `<div class="accordion" id="a${result[i].id}">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="h${result[i].id}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c${result[i].id}">
+       ${result[i].id}
+      </button>
+    </h2>
+    <div id="c${result[i].id}" class="accordion-collapse collapse data-bs-parent="#a${result[i].id}">
+      <div class="accordion-body">
+	   <div class="row">
+          <div class="col-6">
+            <div class="mb-0">Status : </div>${result[i].status}
+          </div>
+          <div class="col-6">
+            <div class="mb-0">Amount : </div>${result[i].params.amounts[0].amount}
+          </div>
+ <div class="col-12 text-break ">
+            <div class="mb-0">Address : </div>${result[i].params.amounts[0].address}
+          </div>
+          <div class="col-12 text-break ">
+	   <div class="mb-0">${msgid}</div>${msg}
+	  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+
+				}
+			}
+	console.log(appendstr);
+$("#txbody").html(appendstr);	
+	}
+  		else
+                alert(result.error.message);
+                },
+  error: function(result) {
+            alert('error');
+        }
+});
+
+$("#txnmodal").modal("show");
+
+});
+
+
+$("#walletbkp").on("click" , function(e) {
+const a = document.createElement('a')
+var url = location.protocol+"//"+location.host+'/walletexport'; 
+ a.href = url
+  a.download = url.split('/').pop()
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a);
+
+});
+
+
+$("#sendfund").on("click" , function(e) {
+if(!$("#toaddr").val())
+alert("Enter valid Zcash address");
+else if(!$("#amt").val())
+alert("Enter valid amount");
+else if($("#txnchk").is(':checked')&&!$("#txnfees").val())
+alert("Enter valid transaction fees");
+else if(!$("#walletlist").find(":selected").val())
+alert("Select from wallet");
+else
+{
+var txnfees = "null";
+var ua = "";
+var txntype = "shielded";
+if($("#walletlist").find(":selected").val()[0]=="t")
+txntype="transparent";
+ualist.forEach((key, index) => {
+if(key.sapling==$("#walletlist").find(":selected").val()||key.transparent==$("#walletlist").find(":selected").val())
+ua=key.ua;
+});
+if($("#txnchk").is(':checked'))
+txnfees = $("#txnfees").val();
+
+ $.ajax({
+     contentType: 'application/json',
+type: "POST",
+        url: location.protocol+"//"+location.host+"/send",
+        data: JSON.stringify({
+            ua: ua,
+            to: $("#toaddr").val(),
+	    amt: $("#amt").val(),
+	    fees: txnfees,
+	    type: txntype
+        }),
+        datatype: 'json',
+        success: function(result) {
+               alert(result);
+                },
+        error: function(result) {
+            alert('error');
+        }
+    });
+}
+
+});
+
+
+$("#shieldfndbtn").on("click" , function (e) {
+
+
+
+})'
+
+
+$("#newaddress").on("click" , function(e) {
+$.get(location.protocol+"//"+location.host+'/newaddr', {category:'client', type:'premium'}, function(response){
+alert(response.message);
+location.reload();
+});
+
+});
+
+ $.ajax({
+     contentType: 'application/json',
+type: "POST",
+        url: location.protocol+"//"+location.host+"/wallet",
+        data: JSON.stringify({
+            type: "transparent"
+        }),
+        datatype: 'json',
+        success: function(result) {
+               //alert(result.message);
+		ualist=result.message;
+		result.message.result.forEach((key, index) => {
+  			addlist[index] ='<option value="'+ key.addresses[0].ua +'">'+ key.addresses[0].ua +'</option>' ;
+			//addlist[index] ='<option value="'+ key.sapling +'">'+ key.sapling +'</option>' ;
+			console.log(key);
+			
+		});
+		$('#walletlist').append(addlist);
+                },
+        error: function(result) {
+            alert('error');
+        }
+    });
+
+
+});
+  $(".sidebar ul li").on('click' , function(){
+    $(".sidebar ul li.active").removeClass('active');
+    $(this).addClass('active');
+
+  })
+$('.open-btn').on('click', function(){
+  $('.sidebar').addClass('active');
+});
+
+$('.close-btn').on('click', function(){
+  $('.sidebar').removeClass('active');
+})
+</script>
+
+</body>
+
+
+<style>
+  body
+{
+    background-color: #f3e7ff;
+}
+#side_nav
+{
+    background-color: #8a2be2;
+    min-width: 250px;
+    max-width: 250px;
+}
+
+
+.navbtn
+{
+color:#5e00b5;
+font-weight: 700;
+}
+
+#txnfees:disabled
+{
+border-bottom: 0.1rem dashed #cfbede;
+}
+
+.form-switch .form-check-input {
+border: solid 0.2em #8a2be2 !important;
+height:2em;
+width:3em;
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%238a2be2'/%3e%3c/svg%3e") !important;
+}
+
+.form-check-input:checked {
+    background-color: #8a2be2;
+   
+}
+
+
+.form-switch .form-check-input:checked
+{
+background-image : url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important ;
+
+}
+
+
+.tend
+{
+  text-align: end;
+}
+
+.btn-copy
+{
+  height: 100%;
+  width: 100%;
+}
+
+.custom-sel
+{
+  height: 100%;
+}
+  .lsb
+{
+  position: fixed;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 50%;
+    width:210px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+
+}
+
+.nav-tabs .nav-link.active{    
+border-bottom: .3em solid #8a2be2;
+}
+
+
+.mb-0
+{
+  color: #5e00b5!important;
+  word-break: break-all;
+}
+
+.accordion-button{
+  color: #5e00b5!important;
+    font-weight: bold;
+}
+
+.input-field
+{
+  display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0 10px 0 10px;
+}
+
+.input-field label {
+    color: #5e00b5!important;
+    font-weight: bold;
+}
+
+.input
+{
+  height: 45px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 0.1rem dashed #5e00b5;
+    outline: none;
+    margin-bottom: 20px;
+    color: #5e00b5!important;
+}
+
+.input-box .input-field label
+{
+    position: absolute;
+    top: -5px;
+    left: 10px;
+    pointer-events: none;
+    transition: .5s;
+} 
+.input-field .input:focus ~ label
+{
+    top: -10px;
+    font-size: 13px;
+}
+.input-field .input:valid ~ label
+{
+    top: -10px;
+    font-size: 13px;
+    color: #5d5076;
+}
+.input-field .input:focus, .input-field .input:valid 
+{
+    border-bottom: 1px solid #743ae1;
+}
+
+.btn-primary
+{
+  background-color: #8a2be2;
+}
+
+.btn-primary:hover
+{
+  background-color: #5e00b5!important;
+}
+
+.content
+{
+    min-height: 100vh;
+    width: 100%;
+    background-color: #f3e7ff;
+}
+hr.h-color
+{
+    background-color: #fff;
+    height: 2px;
+}
+.sidebar li.active
+{
+    background: #0f1f2b;
+    border-radius: 8px;
+}
+.head-box
+{
+    margin: 30px 35px 15px 30px !important;
+}
+
+.sidebar li.active a:hover, .sidebar li.slowcolor:hover
+{
+    color: #dfe9eb55;
+    background: #a9cccfac;
+    border-radius: 6px;
+    transition:linear .5s;
+}
+#noticon
+{
+    background:#fb6279b3;
+}
+.sidebar li.active a:hover
+{
+
+color: aliceblue;
+
+}
+.sidebar li a
+{
+    color: #fff;
+}
+.bg-blue
+{
+    background-color: cadetblue;
+    width: fit-content !important;
+    padding: 10px;
+    border-radius: 5px;
+}
+.d-flex
+{
+    gap: 10px;
+}
+.px-35
+{
+    padding-left: 1.2rem!important;
+    padding-right: 1.2rem!important;
+}
+
+@media(max-width: 767px){
+
+  .col-11
+  {
+    width: 80%;
+  }
+  .tend{
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .tcent
+  {
+    text-align: center;
+  }
+
+  .col-10
+  {
+    width: 60%;
+  }
+    #side_nav{
+        margin-left: -250px;
+        position: fixed;
+min-height: 100vh;
+z-index: 1;
+transition: all 1s;
+    }
+
+    #side_nav.active{
+        margin-left: 0;
+    }
+}
+</style>
+</html>

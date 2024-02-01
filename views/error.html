@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+    <div class="card text-center">
+      <div class="card-header">
+        <h1 class="card-title">Error!</h1>
+      </div>
+      <div class="card-body">
+        <h3 class="card-text">Your node encountered an error. Try rebooting to fix it, if error persists contact support with the log.</h3>
+        <pre class="code-block">
+
+</pre>
+      </div>
+      <div class="card-footer">
+	<button class="btn btn-primary" id="update-btn">Update</button>
+        <button class="btn btn-primary" id="reboot-btn">Reboot</button>
+        <button class="btn btn-danger" id="contact-support-btn">Contact Support</button>
+      </div>
+    </div>
+  </div>
+<style>
+body{
+background-color: #f3e7ff;
+}
+
+#update-btn
+{
+display:none;
+}
+
+.btn-primary {
+    background-color: #8a2be2;
+}
+.card-header
+{
+background: #9a00bd;
+color: white;
+}
+
+h3{
+color:#8a2be2;
+}
+
+.card-footer
+{
+background: #9a00bd;
+
+}
+</style>
+  <script>
+const logElement = document.querySelector('.code-block');
+const url = location.origin+'/error'; // Replace with the actual URL
+const updateurl = location.origin+'/update';
+
+
+fetch(url)
+  .then(response => response.json()) 
+  .then(data => {
+if(data.updateavailable==="true")
+{
+$("#update-btn").css("display", "inline-block");
+$(".card-text").html("Your node encountered an error. Try rebooting to fix it, if error persists contact support with the log.");
+logElement.textContent = "New Zcashd update \""+data.updatename+"\" available. Click the update button to update to the latest version.";
+}
+else
+{
+logElement.textContent = data.errormessage;
+}
+}).catch(error => {logElement.textContent = JSON.stringify(error);console.log(error);});
+
+const rebootBtn = document.getElementById('reboot-btn');
+const updateBtn = document.getElementById('update-btn');
+const contactSupportBtn = document.getElementById('contact-support-btn');
+
+rebootBtn.addEventListener('click', () => {
+  fetch(url, {
+    method: 'POST',
+  })
+    .then(response => response.json())
+    .then(data => alert(data.message))
+    .catch(error => alert('Error posting to server'));
+});
+
+
+updateBtn.addEventListener('click', () => {
+  fetch(updateurl, {
+    method: 'GET',
+  })
+    .then(response => response.json())
+    .then(data => alert(data.message))
+    .catch(error => alert('Error posting to server'));
+});
+
+
+
+contactSupportBtn.addEventListener('click', () => {
+
+const logText = document.querySelector('.code-block').textContent;
+  const subject = "Zcash Node Error: Request for Support";
+  const body = `My Zcash node encountered an error. Help me find a fix. Here's the log:\n\n${logText}`;
+  const emailLink = `mailto:support@nodecipher.com?subject=${subject}&body=${body}`; 
+  window.location.href = emailLink;
+
+});
+
+</script>
+</body>
+</html>

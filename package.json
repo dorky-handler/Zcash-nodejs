@@ -1,0 +1,24 @@
+{
+  "name": "zcash-server",
+  "version": "1.0.0",
+  "description": "zcash rpc server using express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "crypto-js": "^4.2.0",
+    "drivelist": "^11.1.0",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "linux-blockutils": "^0.2.0",
+    "linux-mountutils": "^1.0.2",
+    "node-fetch": "^2.6.9",
+    "onoff": "^6.0.3",
+    "rpio": "^2.4.2",
+    "ws": "^8.16.0"
+  }
+}

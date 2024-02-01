@@ -1,0 +1,856 @@
+<html>
+    <head>
+        <title>Zcash node settings</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+      </head>
+    <body>
+        <div class="main-container d-flex">
+<div class="spinner-wrapper">
+<div class="spinner-border" role="status">
+</div>
+<h2 class="mb-0">Loading...</h2>
+</div>          
+<div class="sidebar" id="side_nav">
+            <div class="header-box px-2 pt-3 pb-4 d-flex justify-content-between">
+              <h1 class="fs-4"><span class="bg-white text-darkblue rounded shadow px-2 me-2">Z</span><span class="text-white">Zcash Node</span></h1>
+            <button class="btn d-md-none d-block close-btn px-1 py-0 text-white"><i class="fa-solid fa-bars"></i></button>
+            </div>
+            <ul class="list-unstyled px-2 lsb">
+              <li class="slowcolor"><a href="/" class="text-decoration-none px-3 py-2 d-block"><i class="fa-sharp fa-solid fa-house fa-fw"></i>Dashboard</a></li>
+              <li class="active slowcolor"><a href="#" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-gear fa-fw"></i>Settings</a></li>
+              <li class="slowcolor"><a href="/wallet" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-wallet fa-fw"></i>Wallet</a></li>
+              <li class="slowcolor"><a href="#" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-network-wired fa-fw"></i>Web-SSH</a></li>
+            </ul>
+            <!-- made by animal spirits -->
+            </div>
+<div class="content">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" id="topname">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between d-md-none d-block">
+      <a class="navbar-brand fs-4" href="#">Zcash node</a>
+      <button class="btn px-1 py-0 open-btn"><i class="fa-solid fa-bars"></i></button>
+    </div>
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+
+        <a class="nav-link active" aria-current="page" id="logout" href="#">logout</a>
+
+        </li></ul>
+
+<!--      
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav  mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">logout</a>
+          </li>
+          
+          
+        </ul>
+        
+      </div>
+-->   
+ </div>
+  </nav>
+  <div class="row head-box d-flex">
+    <div class="bg-blue "><i class="fa-solid fa-gear fa-fw"></i>
+     
+    </div>
+    <div class="col col-md-auto ">
+    <h4>Settings</h4>
+    
+  </div>
+  <hr class="my-4" />
+  </div>
+  <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8 mx-auto">
+            
+            <div class="my-0">
+
+<strong class="mb-0">Node settings</strong>
+                <p>Tweak node settings here.</p>
+                <div class="list-group mb-5 shadow">
+                    
+                    <div class="list-group-item">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <strong class="mb-0">TOR support</strong>
+                                <p class="text-muted mb-0">Enable Zcashd on the TOR network. </p>
+                            </div>
+                            <div class="col-auto">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="torchk" />
+                                    <span class="custom-control-label"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<div class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <strong class="mb-0">Auto-update</strong>
+                            <p class="text-muted mb-0">Enable auto-update of the device software.</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="updatechk" />
+                                <span class="custom-control-label"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-item">
+                  <div class="row align-items-center">
+                      <div class="col">
+                          <strong class="mb-0">Select storage drive</strong>
+                          <div class="input-field">
+                            <div id="select" class="">
+                                <div id="selected">Select drive</div>
+                                 
+                            </div>
+                        </div>
+                      </div>
+                      
+                  </div>
+              </div>
+                <div class="list-group-item">
+                  <div class="row align-items-left">
+                    <div class="col">
+                    
+                        <div class="accordion accordion-flush" id="accordionFlushExample">
+                          <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingOne">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                Add nodes
+                              </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                              <div class="accordion-body">
+                              <div id="list1" class="d-flex flex-wrap justify-content-space-between mb-3">
+                               
+                              </div>
+                              <div class="row">
+                                <div class="col">
+                                  <input id="addtext" type="text" class="form-control" placeholder="Enter node" name="nodes">
+                                </div>
+                                <div class="col">
+                                  <button id="add" class="btn btn-primary">Add node</button>
+                                </div>
+                              </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingTwo">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                Ban nodes
+                              </button>
+                            </h2>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                              <div class="accordion-body">
+                                <div id="list2" class="d-flex flex-wrap justify-content-space-between mb-3">
+                                 
+                                </div>
+                                <div class="row">
+                                  <div class="col">
+                                    <input type="text" id="bantext" class="form-control" placeholder="Enter node" name="nodes">
+                                  </div>
+                                  <div class="col">
+                                    <button id="ban" class="btn btn-primary">Add to banlist</button>
+                                  </div>
+                                </div>
+                                
+                              </div>
+                            </div>
+                          </div>
+                          
+                        </div>
+                      
+                  </div>
+                </div>
+              </div>
+              
+                </div>
+                <button id="save" class="btn btn-primary">Save settings</button>
+                <hr class="my-4" />
+                <strong class="mb-0">Blockchain</strong>
+                <p>Control blockchain storage on this device.</p>
+                <div class="list-group mb-5 shadow">
+                    <div class="list-group-item">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <strong class="mb-0">Reset blockchain :</strong>
+                                
+                            </div>
+                            <div class="col-auto">
+                              <button id="resetblkbtn" class="btn btn-outline-danger px-4">Reset blockchain</button>
+                            </div>
+                        </div>
+                    </div>
+<div class="list-group-item">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <strong class="mb-0">Rescan blockchain :</strong>
+                                
+                            </div>
+                            <div class="col-auto">
+                              <button id="rescanblkbtn" class="btn btn-outline-danger px-35">  Rescan blockchain  </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <strong class="mb-0">Reindex blockchain :</strong>
+                                
+                            </div>
+                            <div class="col-auto">
+                              <button id="reindexblkbtn" class="btn btn-outline-danger ">Re-index blockchain</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4" />
+                
+                <div class="d-grid gap-2 col-6 mx-auto mb-5">
+                
+                
+                          <button class="btn btn-danger" type="button">Reset password</button>
+                        </div>      
+            </div>
+        </div>
+    </div>
+    
+    </div>
+</div>
+</div>
+<div class="modal fade" id="resetmodal" tabindex="-1" role="dialog" aria-labelledby="resetmodaltitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Confirm Reset</h5>
+      </div>
+      <div class="modal-body">
+       <h3> Resetting the node would result in deleting your wallet and blockchain data. Make sure you have you have made a backup before confirming. </h3>
+
+      </div>
+      <div class="modal-footer">
+	<button id="resetconfirmmodal" type="button" class="btn btn-danger">Confirm</button>
+        <button id="resetclosemodal" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="rescanmodal" tabindex="-1" role="dialog" aria-labelledby="rescanmodaltitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Confirm Rescan</h5>
+      </div>
+      <div class="modal-body">
+       <h3> Rescanning the node would result rebooting and long load time. Do you want to continue? </h3>
+
+      </div>
+      <div class="modal-footer">
+	<button id="rescanconfirmmodal" type="button" class="btn btn-danger">Confirm</button>
+        <button id="rescanclosemodal" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="reindexmodal" tabindex="-1" role="dialog" aria-labelledby="rescanmodaltitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Confirm Reindex</h5>
+      </div>
+      <div class="modal-body">
+       <h3> Reindexing the node would result in rebooting and reloading the block storage. Do you want to continue? </h3>
+
+      </div>
+      <div class="modal-footer">
+	<button id="reindexconfirmmodal" type="button" class="btn btn-danger">Confirm</button>
+        <button id="reindexclosemodal" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+var settings=[];
+var addnode=[];
+var bannode=[];
+$(document).ready(function()
+{
+
+
+if(!sessionStorage.getItem("key"))
+location.replace(location.origin+"/login");
+
+
+$("#resetconfirmmodal").on("click" , async function(e) {
+var dataToEncrypt = {"type":"reset"};
+var encrData = await encryptObj(dataToEncrypt);
+ $.ajax({
+     contentType: 'application/json',
+type: "POST",
+        url: location.protocol+"//"+location.host+"/reset",
+        data: JSON.stringify(encrData),
+        datatype: 'json',
+        success: async function(result) {
+        if(result.error)
+alert("Error - "+result.message);
+else
+{
+        var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
+        alert(decryptedData);
+	$("#resetmodal").modal("hide");
+}
+                },
+        error: function(result) {
+            alert('Error - ' + result);
+        }
+    });
+});
+
+
+
+
+$("#rescanconfirmmodal").on("click" , async function(e) {
+var dataToEncrypt = {"type":"rescan"};
+var encrData = await encryptObj(dataToEncrypt);
+ $.ajax({
+     contentType: 'application/json',
+type: "POST",
+        url: location.protocol+"//"+location.host+"/rescan",
+        data: JSON.stringify(encrData),
+        datatype: 'json',
+        success: async function(result) {
+        if(result.error)
+alert("Error - "+result.message);
+else
+{
+        var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
+        alert(decryptedData);
+	$("#rescanmodal").modal("hide");
+}
+                },
+        error: function(result) {
+            alert('Error - ' + result);
+        }
+    });
+});
+
+$("#reindexconfirmmodal").on("click" , async function(e) {
+var dataToEncrypt = {"type":"reindex"};
+var encrData = await encryptObj(dataToEncrypt);
+ $.ajax({
+     contentType: 'application/json',
+type: "POST",
+        url: location.protocol+"//"+location.host+"/reindex",
+        data: JSON.stringify(encrData),
+        datatype: 'json',
+        success: async function(result) {
+        if(result.error)
+alert("Error - "+result.message);
+else
+{
+        var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
+        alert(decryptedData);
+        $("#reindexmodal").modal("hide");
+}
+                },
+        error: function(result) {
+            alert('Error - ' + result);
+        }
+    });
+});
+
+
+
+
+
+/*$("#reindexconfirmmodal").on("click" , async function(e) {
+
+  fetch(location.origin+"/reindex", {
+    method: 'GET',
+  }).then(response => response.json())
+    .then(data => {alert("Device will now reboot and start re-index.");$("#reindexmodal").modal("hide");})
+    .catch(error => alert('Error posting to server'));
+
+});
+*/
+
+
+$("#logout").on("click" , function(e) {
+sessionStorage.clear();
+location.replace(location.origin+"/login");
+});
+
+
+jQuery.ajaxSetup({
+  beforeSend: function() {
+     $('.spinner-wrapper').show();
+  },
+  complete: function(){
+     $('.spinner-wrapper').hide();
+  },
+  success: function() {}
+});
+
+$.get(location.protocol+"//"+location.host+'/diskread', {category:'client', type:'premium'}, function(response){ 
+
+if(response.error&&response.message=="login")
+{
+window.location.replace(window.location.origin+"/login");
+}
+else{
+for(var i=0;i<response.length;i++)
+{
+var label = (response[i].LABEL) ? response[i].LABEL : ((response[i].MODEL) ? (response[i].MODEL) : (response[i].UUID));
+$("#select").append("<div class=\"option\">"+response[i].NAME+"<br>/dev/"+response[i].NAME+"|"+label+"|"+Math.round((response[i].SIZE*100)/(1024*1024*1024))/100+" GB</div>");
+}
+}
+});
+
+
+
+$.get(location.protocol+"//"+location.host+'/settread', {category:'client', type:'premium'}, function(response){
+
+if(response.message.update=="true") 
+$("#updatechk").prop("checked", true)
+if(response.message.drv)
+$("#selected").html(response.message.drv);
+if(response.message.tor=="true")
+$("#torchk").prop("checked", true)
+if(response.message.add)
+{
+for(var i=0;i<response.message.add.length;i++)
+{
+addnode.push(response.message.add[i]);
+var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeadd\">";
+var divpost="<span class=\"badge bg-secondary delbtnadd\">X</span></button>";
+var divadd=divpre+response.message.add[i]+divpost;
+$("#list1").append(divadd);
+}
+}
+
+if(response.message.ban)
+{
+for(var i=0;i<response.message.ban.length;i++)
+{
+bannode.push(response.message.ban[i]);
+var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeban\">";
+var divpost="<span class=\"badge bg-secondary delbtnadd\">X</span></button>";
+var divadd=divpre+response.message.ban[i]+divpost;
+$("#list2").append(divadd);
+}
+}
+
+
+});
+
+
+
+$("#rescanblkbtn").on("click" , function(e) {
+
+$("#rescanmodal").modal("show");
+
+});
+
+$("#rescanclosemodal").on("click" , function(e) {
+
+$("#rescanmodal").modal("hide");
+
+});
+
+
+
+
+$("#reindexblkbtn").on("click" , function(e) {
+
+$("#reindexmodal").modal("show");
+
+});
+
+
+
+
+$("#reindexclosemodal").on("click" , function(e) {
+
+$("#reindexmodal").modal("hide");
+
+});
+
+
+$("#resetblkbtn").on("click" , function(e) {
+
+$("#resetmodal").modal("show");
+
+});
+
+$("#resetclosemodal").on("click" , function(e) {
+
+$("#resetmodal").modal("hide");
+
+});
+
+
+function encryptObj(dataToEncrypt)
+{
+var passphrase = sessionStorage.getItem("key");
+var salt = CryptoJS.lib.WordArray.random(16); // Generate a random salt
+    var iterations = 10000;
+    var keySize = 256; // Key size in bits
+    var key = CryptoJS.PBKDF2(passphrase, salt, { keySize: keySize / 32, iterations: iterations });
+    var iv = CryptoJS.lib.WordArray.random(16);
+    var encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(dataToEncrypt),
+      key,
+      { iv: iv, mode: CryptoJS.mode.CBC }
+    ).toString();
+return {"encryptedData":encryptedData , "iv": iv.toString(), "salt": salt.toString()};
+}
+
+async function decryptData(encryptedData, iv, salt, passphrase) {
+      const key = CryptoJS.PBKDF2(passphrase, CryptoJS.enc.Hex.parse(salt), { keySize: 256 / 32, iterations: 10000 });
+      const ivWordArray = CryptoJS.enc.Hex.parse(iv);
+      const decryptedData = CryptoJS.AES.decrypt(encryptedData, key, { iv: ivWordArray  ,mode: CryptoJS.mode.CBC}).toString(CryptoJS.enc.Utf8);
+return decryptedData
+  }
+
+
+
+$("#save").on("click" , async function(e) {
+e.preventDefault();
+var dataToEncrypt = { tor: $("#torchk").is(":checked"), drv: $("#selected").html(),update: $("#updatechk").is(":checked"),add: addnode,ban: bannode };
+var encrData = await encryptObj(dataToEncrypt);
+    $.ajax({
+     contentType: 'application/json',
+type: "POST",
+        url: location.protocol+"//"+location.host+"/settings",
+        data: JSON.stringify(encrData),
+        datatype: 'json',
+        success: async function(result) {
+	if(result.error)
+alert("Error - "+result.message);
+else
+{
+        var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
+	alert(decryptedData);
+}
+                },
+        error: function(result) {
+            alert('Error - ' + result);
+        }
+    });
+});
+
+
+
+//$("#select").append(' <div class="option">Sda1<br>/dev/sda1|Drive name|100 GB</div><div class="option">Sda2<br>/dev/sda2|Drive name|100 GB</div><div class="option">Sda3<br>/dev/sda3|Drive name|100 GB</div><div class="option">Sda4<br>/dev/sda4|Drive name|100 GB</div>');
+$( "#select" ).on( "click", function() { 
+// $("#select").click(function(e)
+    
+			$(this).children(".option").toggleClass("shown");
+      $(this).toggleClass("open");
+		});
+  $( '#select').on( 'click', '.option', function (e) {
+	//$(".option").click(function()
+		
+			$(this).siblings("#selected").html($(this).html().split("<br>")[0]);
+      console.log($(this).siblings("#selected").html()+"bbnbm,");
+    });
+  /*
+  $("input").click(function()
+    {
+      var selection = $("#selected").html();
+      alert(selection);
+    });*/
+});
+
+  $(".sidebar ul li").on('click' , function(){
+    $(".sidebar ul li.active").removeClass('active');
+    $(this).addClass('active');
+
+  })
+$('.open-btn').on('click', function(){
+  $('.sidebar').addClass('active');
+});
+
+$('.close-btn').on('click', function(){
+  $('.sidebar').removeClass('active');
+})
+
+$(document).on("click", function (event) {
+
+if ($(event.target).closest("#side_nav").length === 0 && $(event.target).closest(".open-btn").length !=1)
+     $('.sidebar').removeClass('active');
+  
+});
+
+
+
+
+$("#add").on("click" , function(e) {
+  if( $("#addtext").val() ) {
+addnode.push($("#addtext").val());
+var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeadd\">";
+var divpost="<span class=\"badge bg-secondary delbtnadd\">X</span></button>";
+var divadd=divpre+$("#addtext").val()+divpost;
+$("#list1").append(divadd);
+$("#addtext").val("");
+  }
+});
+
+$("#ban").on("click" , function(e) {
+  if( $("#bantext").val() ) {
+bannode.push($("#bantext").val());
+var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeban\">";
+var divpost="<span class=\"badge bg-secondary delbtnadd\">X</span></button>";
+var divadd=divpre+$("#bantext").val()+divpost;
+$("#list2").append(divadd);
+$("#bantext").val("");
+  }
+});
+
+$( '#list1').on( 'click', '.btnnodeadd', function (e) {
+
+  let str =$(this).text();
+  str=str.slice(0,-1);
+  addnode = addnode.filter(v => v !== str); 
+ $(this).remove();
+});
+
+$( '#list2').on( 'click', '.btnnodeban', function (e) {
+
+  let str =$(this).text();
+  str=str.slice(0,-1);
+  bannode = bannode.filter(v => v !== str); 
+ $(this).remove();
+});
+
+
+
+
+</script>
+
+</body>
+<style>
+  body
+{
+    background-color: #f3e7ff;
+}
+
+#select
+{
+   float: left;
+	width: 100%;
+    color: #5e00b5;
+    font-weight: bold;
+	font-size: 20px;
+	line-height: 30px;
+	cursor: pointer;
+	border-radius: 5px;
+  text-align: center;
+    z-index: 5;
+}
+
+#select.open
+{
+  border-radius: 5px 5px 0 0;
+}
+#select .option {	border: 3px dashed #5e00b5; }
+#select .option
+{
+	background: #8a2be2;
+	display: none;
+	padding: 5px;
+	font-size: 15px; 
+	line-height: 20px;
+	color: white;
+	border-top: none;
+  position: relative;
+}
+#select .option.shown:first-line
+{
+	/*Aquí sobreescribimos el tamaño del
+	texto de la primera línea*/
+	font-size: 20px;
+	line-height: 30px;
+}
+
+
+
+#select .shown { display: block; }
+#select .option:hover
+{
+	background: #c28df3;
+}
+#select .option.shown:last-child { border-radius: 0 0 5px 5px }
+input
+{
+	margin-top: 10px;
+}
+    *{
+        font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+
+}
+
+
+
+.spinner-wrapper {
+background-color:#f3e7ff;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:999999;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+
+.spinner-border {
+height:3em;
+width:3em;
+color:#8a2be2;
+}
+
+
+
+
+#side_nav
+{
+    background-color: #8a2be2;
+    min-width: 250px;
+    max-width: 250px;
+}
+
+
+
+  .lsb
+{
+  position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 50%;
+    width:210px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+
+}
+
+.mb-0
+{
+  color: #5e00b5!important;
+}
+
+.accordion-button{
+  color: #5e00b5!important;
+    font-weight: bold;
+}
+
+.btn-primary
+{
+  background-color: #8a2be2;
+}
+
+.btn-primary:hover
+{
+  background-color: #5e00b5!important;
+}
+
+.content
+{
+    min-height: 100vh;
+    width: 100%;
+    background-color: #f3e7ff;
+}
+hr.h-color
+{
+    background-color: #fff;
+    height: 2px;
+}
+.sidebar li.active
+{
+    background: #0f1f2b;
+    border-radius: 8px;
+}
+
+.text-darkblue {
+    border-left: 0.3em solid;
+}
+.head-box
+{
+    margin: 30px 35px 15px 30px !important;
+}
+
+.sidebar li.active a:hover, .sidebar li.slowcolor:hover
+{
+    color: #dfe9eb55;
+    background: #a9cccfac;
+    border-radius: 6px;
+    transition:linear .5s;
+}
+#noticon
+{
+    background:#fb6279b3;
+}
+.sidebar li.active a:hover
+{
+
+color: aliceblue;
+
+}
+.sidebar li a
+{
+    color: #fff;
+}
+.bg-blue
+{
+    background-color: #9a00bd;
+    width: fit-content !important;
+    padding: 10px;
+    border-radius: 5px;
+}
+.d-flex
+{
+    gap: 10px;
+}
+.px-35
+{
+    padding-left: 1.2rem!important;
+    padding-right: 1.2rem!important;
+}
+
+@media(max-width: 767px){
+    #side_nav{
+        margin-left: -250px;
+        position: fixed;
+min-height: 100vh;
+z-index: 1;
+transition: all 1s;
+    }
+
+    #side_nav.active{
+        margin-left: 0;
+    }
+}
+</style>
+</html>

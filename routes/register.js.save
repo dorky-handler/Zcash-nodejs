@@ -1,0 +1,49 @@
+const express=require("express")
+const fs = require('fs')
+const path = './node.conf'
+const path1 = require('path');
+var ferr=false;
+var response="";
+const jslib = require("../controller/jsonread");
+// Creating express Router
+const router=express.Router()
+router.use(express.json())
+// Handling register request
+
+router.get("/",(req,res,next)=>{
+ if (fs.existsSync(path)) {
+    //file exists
+console.log("file exists");
+ res.redirect('/login');
+}
+else
+res.sendFile( path1.join(__dirname, '../views/register.html'));
+});
+
+
+router.post("/",(req,res,next)=>{
+//console.log(req.body);
+//res.send(req.body.password);
+try {
+  if (fs.existsSync(path)) {
+    //file exists
+console.log("file exists");
+res.send("\"error\":\"true\",\"message\":\"exists\"");
+  }
+else
+{
+var conf={"name":req.body.name,"password":req.body.password,"conf":"none","token":""};
+var fret = jslib.writeconf(conf);
+
+if(!fret.err)
+response = {"error":false,"message":"registered"};
+else
+response = {"error":true,"message":fret.message};
+res.send(response);
+
+}
+} catch(err) {
+  console.error(err)
+}
+})
+module.exports=router

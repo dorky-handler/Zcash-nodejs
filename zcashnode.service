@@ -1,0 +1,13 @@
+[Unit]
+Description=Zcashd node software startup
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/node
+ExecStart=/usr/bin/node index.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,145 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+</head>
+<body>
+<fieldset>
+<legend>Node Settings</legend>
+Node software : <select disabled>
+<option value="Zcashd">Zcashd</option>
+<option value="Lightningd">Lighningd</option>
+</select>
+<br>
+Data drive : <input type="text" id="datadrv"></input><br>
+Fan on/off : <input type="checkbox" id="fanchk"></input><br>
+TOR Support : <input type="checkbox" id="torchk"></input><br>
+Send free txn : <input type="checkbox" id="txnchk"></input><br>
+Auto-update : <input type="checkbox" id="updatechk"></input><br>
+<div id="collapse1">
+> Addnode
+<div id="inside1">
+<div id="list1">
+
+</div>
+<input type="text" id="addtext"></input>
+<button id="add">add node</button>
+</div>
+</div>
+<div>
+>ban nodes
+<div id="inside2">
+
+<div id="list2">
+
+</div>
+<input type="text" id="bantext"></input>
+<button id="ban"> add to ban list </button> 
+</div>
+</div>
+<br>
+<button id="save">Save Settings</button>
+</fieldset>
+<br>
+<fieldset>
+<legend> Blockchain : </legend>
+Reset Blockchain : <button>Reset blockchain</button>
+Rescan Blockchain : <button>Rescan Blockchain </button>
+Reindex Blockchain : <button>Re-index Blockchain </button>
+</fieldset>
+<br>
+<fieldset>
+<legend>Reset Password</legend>
+<button id="resetpwd">
+Reset Password
+</button>
+</fieldset>
+<fieldset>
+<legend>Download logs</legend>
+<button id="debug">Debug log</button><button id="db">Db log</button>
+</fieldset>
+<script>
+var settings=[];
+var addnode=[];
+var bannode=[];
+$(document).ready(function(){
+$("#debug").on("click",function(e) {
+ $.ajax({
+     contentType: 'application/json',
+type: "GET",
+        url: location.protocol+"//"+location.host+"/download",
+        success: function(result) {
+                alert(result.message);
+                },
+        error: function(result) {
+            alert('error');
+        }
+    });
+});
+$("#db").on("click",function(e) {
+ $.ajax({
+     contentType: 'application/json',
+type: "POST",
+        url: location.protocol+"//"+location.host+"/download",
+        data: JSON.stringify({
+            drv: "db"
+        }),
+        datatype: 'json',
+        success: function(result) {
+                alert(result.message);
+                },
+        error: function(result) {
+            alert('error');
+        }
+    });
+});
+$("#resetpwd").on("click",function(e) {
+location.href = location.protocol+"//"+location.host+"/reset";
+});
+$("#add").on("click" , function(e) {
+addnode.push($("#addtext").val());
+console.log(addnode);
+var divpre="<div style=\"background:gray;padding:2px;\">";
+var divpost="</div>";
+var divadd=divpre+$("#addtext").val()+divpost;
+alert(divadd);
+$("#list1").append(divadd);
+$("#addtext").val("");
+});
+$("#ban").on("click" , function(e) {
+bannode.push($("#bantext").val());
+console.log(bannode);
+var divpre="<div style=\"background:gray;padding:2px;\">";
+var divpost="</div>";
+var divadd=divpre+$("#bantext").val()+divpost;
+alert(divadd);
+$("#list2").append(divadd);
+$("#bantext").val("");
+});
+$("#save").on("click" , function(e) {
+        e.preventDefault();
+    $.ajax({
+     contentType: 'application/json',
+type: "POST",
+        url: location.protocol+"//"+location.host+"/settings",
+        data: JSON.stringify({
+            fan: $("#fanchk").is(":checked"),
+            tor: $("#torchk").is(":checked"),
+	    txn: $("#txnchk").is(":checked"),
+	    drv: $("#datadrv").val(),
+	    update: $("#updatechk").is(":checked"),
+	    add: addnode,
+	    ban: bannode
+        }),
+        datatype: 'json',
+        success: function(result) {
+		alert(result.message);
+		},
+        error: function(result) {
+            alert('error');
+        }
+    });
+});
+});
+</script>
+</body>
+</html>

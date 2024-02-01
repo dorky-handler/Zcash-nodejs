@@ -1,0 +1,52 @@
+const express=require("express")
+const fileName = './node.conf';
+//const file = require(fileName);
+const cookieParser = require('cookie-parser')
+const router=express.Router();
+var crypto = require("crypto");
+const jslib = require("../controller/jsonread");
+let resstr="";
+var onemonth = 30 * 24 * 3600 * 1000;
+router.use(cookieParser());
+router.get("/",(req,res,next)=>{
+res.sendFile( '/home/pi/node/views/login.html');
+
+});
+
+
+router.post("/",(req,res,next)=>{
+var msg;
+var resp=jslib.jsread();
+var jsonobj=resp;
+res.send(resp.conf.name);
+if(resp['error'])
+{
+msg={
+error:true,
+redirect:"register"
+}
+    res.send(msg);
+}
+else
+{
+if(resp.conf.name==resp.conf.name&&resp.conf.password==resp.conf.password)
+{
+var id = crypto.randomBytes(10).toString('hex');
+res.cookie(`zcash-ui`,id,{
+        maxAge: onemonth,
+        httpOnly: true,
+         });
+	msg={
+error:false,
+redirect:"dashboard"
+}
+
+res.send(msg);
+}
+
+}
+
+
+
+});
+module.exports=router

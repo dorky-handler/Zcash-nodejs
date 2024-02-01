@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>
+RESET
+</title>
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+</head>
+<body>
+<fieldset>
+<legend>
+RESET
+</legend>
+Type new password : <input type="password" id="pwd">
+<br>
+Confirm password : <input type="password" id="cpwd">
+<br>
+<button id="reset">REset password</button>
+</fieldset>
+<script>
+$(document).ready(function(){
+$("#reset").on("click",function(e) {
+if(($("#pwd").val()||$("#cpwd").val())=="")
+{
+alert("emptu pwwd");
+}
+else if($("#pwd").val()==$("#cpwd").val())
+{
+$.ajax({
+     contentType: 'application/json',
+type: "POST",
+        url: location.protocol+"//"+location.host+"/reset",
+        data: JSON.stringify({
+                password: $("#pwd").val()
+        }),
+        datatype: 'json',
+        success: function(result) {
+//window.location.replace('http://zcash.local:3000/dashboard');
+if(result.error)
+alert(result.message);
+else
+window.location.replace(location.protocol+"//"+location.host);
+},
+        error: function(result) {
+            alert('error');
+        }
+    });
+
+alert("Passowrd check success");
+}
+else
+{
+alert("passw not match");
+}
+});
+});
+</script>
+</body>
+</html>

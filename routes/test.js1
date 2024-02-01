@@ -1,0 +1,83 @@
+const crypto = require('crypto');
+const WebSocket = require('ws');
+const express = require('express');
+const path = require('path');
+const router=express.Router();
+const app = express();
+const server = app.listen(8080);
+const wss = new WebSocket.Server({ server });
+
+// Generate RSA key pair
+const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+  modulusLength: 4096,
+  publicKeyEncoding: { type: 'pkcs1', format: 'pem' },
+  privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+});
+
+// Diffie-Hellman parameters
+const dh = crypto.createDiffieHellman(2048);
+const publicKeyBuffer = dh.generateKeys();
+
+let iv;
+let keyExchangeComplete = false; // Flag to track communication state
+
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    try {
+      if (!keyExchangeComplete) {
+        // Handle key exchange messages
+        const clientPublicKey = message;
+
+        // Sign client's public key
+        const signature = crypto.sign('RSA-SHA256', clientPublicKey, privateKey);
+
+        // Send signed DH public key back to client
+        ws.send(Buffer.concat([publicKeyBuffer, signature]));
+
+        iv = crypto.randomBytes(16); // Generate a new IV for subsequent messages
+        keyExchangeComplete = true; // Mark key exchange as complete
+      } else {
+        // Handle encrypted and authenticated messages
+        const decipher = crypto.createDecipheriv('aes-256-cbc', encryptionKey, iv);
+        const decryptedMessage = decipher.update(message.slice(0, -64), 'binary', 'utf8');
+        decryptedMessage += decipher.final('utf8');
+
+        // Process decrypted message
+        console.log('Received message:', decryptedMessage);
+
+        // Send the object after key exchange and receiving a message
+        const obj = { name: 'custom', content: 'none' };
+        const response = JSON.stringify(obj);
+
+        const iv = crypto.randomBytes(16); // Generate a new IV
+        const cipher = crypto.createCipheriv('aes-256-cbc', encryptionKey, iv);
+        const encryptedMessage = Buffer.concat([
+          cipher.update(response, 'utf8', 'binary'),
+          cipher.final('binary'),
+          crypto.createHmac('sha256', authenticationKey).update(encryptedMessage).digest(),
+        ]);
+        ws.send(Buffer.concat([iv, encryptedMessage]));
+      }
+    } catch (error) {
+      console.error(error);
+      // Handle error appropriately
+    }
+  });
+});
+
+// Serve the web page
+router.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/newlog.html'));
+});
+
+// Handle POST request for login
+router.post('/', (req, res) => {
+  // Initiate key exchange process
+  wss.clients.forEach((client) => {
+    client.send(publicKeyBuffer);
+  });
+  res.sendStatus(200);
+});
+
+
+module.exports=router
