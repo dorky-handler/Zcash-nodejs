@@ -291,7 +291,7 @@ var addnode=[];
 var bannode=[];
 
 function openssh() {
-  var newUrl = window.location.href.replace(/:(\d+)$/, ":" + 4200); // Replace existing port
+  var newUrl ="https://"+window.location.host+":4200"; // Replace existing port
   window.open(newUrl, "_blank"); // Open in new tab
 }
 	
