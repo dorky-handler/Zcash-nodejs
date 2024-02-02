@@ -80,6 +80,31 @@ logElement.textContent = data.errormessage;
 }
 }).catch(error => {logElement.textContent = JSON.stringify(error);console.log(error);});
 
+
+	  function encryptObj(dataToEncrypt)
+{
+var passphrase = sessionStorage.getItem("key");
+var salt = CryptoJS.lib.WordArray.random(16); // Generate a random salt
+    var iterations = 10000;
+    var keySize = 256; // Key size in bits
+    var key = CryptoJS.PBKDF2(passphrase, salt, { keySize: keySize / 32, iterations: iterations });
+    var iv = CryptoJS.lib.WordArray.random(16);
+    var encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(dataToEncrypt),
+      key,
+      { iv: iv, mode: CryptoJS.mode.CBC }
+    ).toString();
+return {"encryptedData":encryptedData , "iv": iv.toString(), "salt": salt.toString()};
+}
+
+async function decryptData(encryptedData, iv, salt, passphrase) {
+      const key = CryptoJS.PBKDF2(passphrase, CryptoJS.enc.Hex.parse(salt), { keySize: 256 / 32, iterations: 10000 });
+      const ivWordArray = CryptoJS.enc.Hex.parse(iv);
+      const decryptedData = CryptoJS.AES.decrypt(encryptedData, key, { iv: ivWordArray  ,mode: CryptoJS.mode.CBC}).toString(CryptoJS.enc.Utf8);
+return decryptedData
+  }
+
+
 const rebootBtn = document.getElementById('reboot-btn');
 const settingsBtn = document.getElementById('settings-btn');
 const updateBtn = document.getElementById('update-btn');
