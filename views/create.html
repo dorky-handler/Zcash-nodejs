@@ -133,10 +133,10 @@ alert("Error could not create new user , please try again.Check console log for 
 console.log(result);
 }
 else{
-                alert("Registration Success.Keep the downloaded username/password values safe,if lost device can not be recovered!");
+                alert("Registration Success.Keep the downloaded username/password values safe,if lost device can not be recovered!. Device will now reboot.");
 		var obj= {"name":$("#name").val(),"password":$("#password").val(),"drive":$("#selected").html()};
                 downloadObject(obj, "Zcashnode.conf");
-		window.location.replace(location.protocol+"//"+location.host+'/login');
+		//window.location.replace(location.protocol+"//"+location.host+'/login');
 }     
    },
         error: function(result) {
