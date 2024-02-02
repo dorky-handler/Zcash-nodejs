@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 User=pi
-WorkingDirectory=/home/pi/node
+WorkingDirectory=/home/pi/zcash-nodejs
 ExecStart=/usr/bin/node index.js
 Restart=on-failure
 RestartSec=5
