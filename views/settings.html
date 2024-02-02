@@ -289,13 +289,14 @@
 var settings=[];
 var addnode=[];
 var bannode=[];
-$(document).ready(function()
-{
 
- function openssh() {
+function openssh() {
   var newUrl = window.location.href.replace(/:(\d+)$/, ":" + 4200); // Replace existing port
   window.open(newUrl, "_blank"); // Open in new tab
 }
+	
+$(document).ready(function()
+{
 	
 
 if(!sessionStorage.getItem("key"))
