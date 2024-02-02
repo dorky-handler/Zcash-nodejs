@@ -5,7 +5,7 @@ var fs = require('fs');
 const crypto = require('crypto');
 const fetch = require('node-fetch');
 const { spawn } = require("child_process");
-var executablePath = "/home/pi/node/zcashd";
+var executablePath = "/home/pi/zcash-nodejs/zcashd";
 var resp =jslib.jsread();
 
 
