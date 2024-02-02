@@ -23,7 +23,7 @@
   <li class="active slowcolor"><a href="#" class="text-decoration-none px-3 py-2 d-block"><i class="fa-sharp fa-solid fa-house fa-fw"></i>Dashboard</a></li>
   <li class="slowcolor"><a href="/settings" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-gear fa-fw"></i>Settings</a></li>
   <li class="slowcolor"><a href="/wallet" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-wallet fa-fw"></i>Wallet</a></li>
-  <li class="slowcolor"><a href="#" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-network-wired fa-fw"></i>Web-SSH</a></li>
+  <li class="slowcolor"><a href="#" onclick="openssh()" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-network-wired fa-fw"></i>Web-SSH</a></li>
 </ul>
 <!-- made by animal spirits -->
 </div>
@@ -118,6 +118,11 @@
 </div>
 <script src="js/dash.js"></script>
 <script>
+ function openssh() {
+  var newUrl = window.location.href.replace(/:(\d+)$/, ":" + 4200); // Replace existing port
+  window.open(newUrl, "_blank"); // Open in new tab
+}
+	
   $(".sidebar ul li").on('click' , function(){
     $(".sidebar ul li.active").removeClass('active');
     $(this).addClass('active');
