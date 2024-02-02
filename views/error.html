@@ -23,6 +23,7 @@
 	<button class="btn btn-primary" id="update-btn">Update</button>
         <button class="btn btn-primary" id="reboot-btn">Reboot</button>
         <button class="btn btn-danger" id="contact-support-btn">Contact Support</button>
+	<button class="btn btn-primary" id="settings-btn">Settings</button>
       </div>
     </div>
   </div>
@@ -77,6 +78,7 @@ logElement.textContent = data.errormessage;
 }).catch(error => {logElement.textContent = JSON.stringify(error);console.log(error);});
 
 const rebootBtn = document.getElementById('reboot-btn');
+const settingsBtn = document.getElementById('settings-btn');
 const updateBtn = document.getElementById('update-btn');
 const contactSupportBtn = document.getElementById('contact-support-btn');
 
@@ -89,6 +91,10 @@ rebootBtn.addEventListener('click', () => {
     .catch(error => alert('Error posting to server'));
 });
 
+settingsBtn.addEventListener('click', () => {
+window.location.replace("/settings");
+});
+	  
 
 updateBtn.addEventListener('click', () => {
   fetch(updateurl, {
