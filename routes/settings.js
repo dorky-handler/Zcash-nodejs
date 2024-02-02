@@ -122,7 +122,7 @@ if(!errbool)
 var writeret = jslib.writeset(writesettings);
 if(!writeret.error)
 {
-var respstring = "Settings saved successfully";
+var respstring = "Settings saved successfully. Device will reboot now.";
 var sendmsg = await jslib.encryptData(respstring, key);
 if(sendmsg.error)
 res.send(sendmsg);
@@ -130,7 +130,7 @@ else
 {
 var respmsg = { "error":false , "message":sendmsg};
 res.send(respmsg);
-//require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg) });
+require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg) });
 }
 }
 else
