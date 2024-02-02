@@ -256,6 +256,12 @@ Confirm shielding amount 0.03z from tdhjh2h1kh12k3ehrbjkknj ?
 
 <script>
 
+  function openssh() {
+  var newUrl = window.location.href.replace(/:(\d+)$/, ":" + 4200); // Replace existing port
+  window.open(newUrl, "_blank"); // Open in new tab
+}
+
+	
 $(document).ready(async function()
 {
 jQuery.ajaxSetup({
@@ -268,10 +274,7 @@ jQuery.ajaxSetup({
   success: function() {}
 });
 
-  function openssh() {
-  var newUrl = window.location.href.replace(/:(\d+)$/, ":" + 4200); // Replace existing port
-  window.open(newUrl, "_blank"); // Open in new tab
-}
+
 
 
 if(!sessionStorage.getItem("key"))
