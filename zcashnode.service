@@ -5,7 +5,8 @@ After=network.target
 [Service]
 User=pi
 WorkingDirectory=/home/pi/zcash-nodejs
-ExecStart=/usr/bin/sudo /usr/bin/node index.js
+ExecStartPre=/usr/bin/sudo setcap 'cap_net_bind_service=+ep' /usr/bin/node
+ExecStart=/usr/bin/node index.js
 Restart=on-failure
 RestartSec=5
 
