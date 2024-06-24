@@ -13,10 +13,20 @@ const session = require('express-session');
 var rpio = require('rpio');
 var pin = 18;
 
+
+function generate8DigitCode() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
 rpio.init({mapping: 'gpio'});
 rpio.open(pin, rpio.OUTPUT, rpio.LOW);
 app.use(session({
-  secret:  "megasecretkey",
+  secret:  generate8DigitCode(),
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -295,6 +305,8 @@ ls.on("close", code => {
 
 function rebootOnErr()
 {
+	 if(require('os').uptime()<1800)
+        {
 	if('error' in resp.conf)
         resp.conf.error=resp.conf.error+1;
         else
@@ -305,6 +317,9 @@ function rebootOnErr()
         if(!writeret.error)
         require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg); });
         });
+	}
+else
+ require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg); });
 }
 
 
