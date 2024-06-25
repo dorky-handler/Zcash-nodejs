@@ -21,6 +21,8 @@ else
 {
 var result = JSON.parse(resp.msg);
 result.settings.rescan="true";
+result.error=0;
+result.errmsg="";
 var writeret = jslib.writeconf(result);
 if (!writeret.error)
 {
