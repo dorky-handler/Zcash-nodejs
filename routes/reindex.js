@@ -23,6 +23,8 @@ else
 //console.log(resp);
 var result = JSON.parse(resp.msg);
 result.settings.reindex="true";
+result.error=0;
+result.errmsg="";
 var writeret = jslib.writeconf(result);
 if (!writeret.error)
 {
