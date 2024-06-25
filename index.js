@@ -305,7 +305,7 @@ ls.on("close", code => {
 
 function rebootOnErr()
 {
-	 if(require('os').uptime()<1800)
+	 if(require('os').uptime()<5400)
         {
 	if('error' in resp.conf)
         resp.conf.error=resp.conf.error+1;
