@@ -80,6 +80,38 @@
                 <p>Tweak node settings here.</p>
                 <div class="list-group mb-5 shadow">
                     
+
+<div class="list-group-item">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <strong class="mb-0">Remote Login</strong>
+                                <p class="text-muted mb-0">Enable Remote login </p>
+                            </div>
+                            <div class="col-auto">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="rlgchk" />
+                                    <span class="custom-control-label"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--
+<div class="list-group-item">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <strong class="mb-0">Remote Disk sharing</strong>
+                                <p class="text-muted mb-0">Enable Disk sharing through Samba </p>
+                            </div>
+                            <div class="col-auto">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="smbchk" />
+                                    <span class="custom-control-label"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+-->
                     <div class="list-group-item">
                         <div class="row align-items-center">
                             <div class="col">
@@ -94,6 +126,7 @@
                             </div>
                         </div>
                     </div>
+
 
 <div class="list-group-item">
                     <div class="row align-items-center">
@@ -141,10 +174,10 @@
                               </div>
                               <div class="row">
                                 <div class="col">
-                                  <input id="addtext" type="text" class="form-control" placeholder="Enter node" name="nodes">
+                                  <input id="addtext" type="text" class="form-control mt-2" placeholder="Enter node" name="nodes">
                                 </div>
                                 <div class="col">
-                                  <button id="add" class="btn btn-primary">Add node</button>
+                                  <button id="add" class="btn btn-primary mt-2">Add node</button>
                                 </div>
                               </div>
                               </div>
@@ -163,10 +196,10 @@
                                 </div>
                                 <div class="row">
                                   <div class="col">
-                                    <input type="text" id="bantext" class="form-control" placeholder="Enter node" name="nodes">
+                                    <input type="text" id="bantext" class="form-control mt-2" placeholder="Enter node" name="nodes">
                                   </div>
                                   <div class="col">
-                                    <button id="ban" class="btn btn-primary">Add to banlist</button>
+                                    <button id="ban" class="btn btn-primary mt-2">Add to banlist</button>
                                   </div>
                                 </div>
                                 
@@ -189,11 +222,11 @@
                     <div class="list-group-item">
                         <div class="row align-items-center">
                             <div class="col">
-                                <strong class="mb-0">Reset blockchain :</strong>
+                                <strong class="mb-0">Reset Device :</strong>
                                 
                             </div>
                             <div class="col-auto">
-                              <button id="resetblkbtn" class="btn btn-outline-danger px-4">Reset blockchain</button>
+                              <button id="resetblkbtn" class="btn btn-outline-danger px-4">Reset Device</button>
                             </div>
                         </div>
                     </div>
@@ -225,7 +258,6 @@
                 <div class="d-grid gap-2 col-6 mx-auto mb-5">
                 
                 
-                          <button class="btn btn-danger" type="button">Reset password</button>
                         </div>      
             </div>
         </div>
@@ -291,8 +323,8 @@ var addnode=[];
 var bannode=[];
 
 function openssh() {
-  var newUrl ="https://"+window.location.host+":4200"; // Replace existing port
-  window.open(newUrl, "_blank"); // Open in new tab
+  var newUrl ="https://"+window.location.host+":4200"; 
+  window.open(newUrl, "_blank"); 
 }
 	
 $(document).ready(function()
@@ -320,6 +352,7 @@ else
         var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
         alert(decryptedData);
 	$("#resetmodal").modal("hide");
+        location.replace(location.origin);
 }
                 },
         error: function(result) {
@@ -348,6 +381,7 @@ else
         var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
         alert(decryptedData);
 	$("#rescanmodal").modal("hide");
+	location.replace(location.origin);
 }
                 },
         error: function(result) {
@@ -360,8 +394,8 @@ $("#reindexconfirmmodal").on("click" , async function(e) {
 var dataToEncrypt = {"type":"reindex"};
 var encrData = await encryptObj(dataToEncrypt);
  $.ajax({
-     contentType: 'application/json',
-type: "POST",
+        contentType: 'application/json',
+        type: "POST",
         url: location.protocol+"//"+location.host+"/reindex",
         data: JSON.stringify(encrData),
         datatype: 'json',
@@ -373,6 +407,7 @@ else
         var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
         alert(decryptedData);
         $("#reindexmodal").modal("hide");
+	location.replace(location.origin);
 }
                 },
         error: function(result) {
@@ -385,16 +420,6 @@ else
 
 
 
-/*$("#reindexconfirmmodal").on("click" , async function(e) {
-
-  fetch(location.origin+"/reindex", {
-    method: 'GET',
-  }).then(response => response.json())
-    .then(data => {alert("Device will now reboot and start re-index.");$("#reindexmodal").modal("hide");})
-    .catch(error => alert('Error posting to server'));
-
-});
-*/
 
 
 $("#logout").on("click" , function(e) {
@@ -438,12 +463,14 @@ if(response.message.drv)
 $("#selected").html(response.message.drv);
 if(response.message.tor=="true")
 $("#torchk").prop("checked", true)
+if(response.message.remote=="true"||response.message.remote=="TRUE")
+$("#rlgchk").prop("checked", true)
 if(response.message.add)
 {
 for(var i=0;i<response.message.add.length;i++)
 {
 addnode.push(response.message.add[i]);
-var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeadd\">";
+var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeadd mb-2 me-2\">";
 var divpost="<span class=\"badge bg-secondary delbtnadd\">X</span></button>";
 var divadd=divpre+response.message.add[i]+divpost;
 $("#list1").append(divadd);
@@ -455,7 +482,7 @@ if(response.message.ban)
 for(var i=0;i<response.message.ban.length;i++)
 {
 bannode.push(response.message.ban[i]);
-var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeban\">";
+var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeban mb-2 me-2\">";
 var divpost="<span class=\"badge bg-secondary delbtnadd\">X</span></button>";
 var divadd=divpre+response.message.ban[i]+divpost;
 $("#list2").append(divadd);
@@ -514,9 +541,9 @@ $("#resetmodal").modal("hide");
 function encryptObj(dataToEncrypt)
 {
 var passphrase = sessionStorage.getItem("key");
-var salt = CryptoJS.lib.WordArray.random(16); // Generate a random salt
+var salt = CryptoJS.lib.WordArray.random(16); 
     var iterations = 10000;
-    var keySize = 256; // Key size in bits
+    var keySize = 256; 
     var key = CryptoJS.PBKDF2(passphrase, salt, { keySize: keySize / 32, iterations: iterations });
     var iv = CryptoJS.lib.WordArray.random(16);
     var encryptedData = CryptoJS.AES.encrypt(
@@ -538,7 +565,7 @@ return decryptedData
 
 $("#save").on("click" , async function(e) {
 e.preventDefault();
-var dataToEncrypt = { tor: $("#torchk").is(":checked"), drv: $("#selected").html(),update: $("#updatechk").is(":checked"),add: addnode,ban: bannode };
+var dataToEncrypt = { tor: $("#torchk").is(":checked"), remote: $("#rlgchk").is(":checked"), drv: $("#selected").html(),update: $("#updatechk").is(":checked"),add: addnode,ban: bannode };
 var encrData = await encryptObj(dataToEncrypt);
     $.ajax({
      contentType: 'application/json',
@@ -553,6 +580,7 @@ else
 {
         var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
 	alert(decryptedData);
+	location.replace(location.origin);
 }
                 },
         error: function(result) {
@@ -563,25 +591,16 @@ else
 
 
 
-//$("#select").append(' <div class="option">Sda1<br>/dev/sda1|Drive name|100 GB</div><div class="option">Sda2<br>/dev/sda2|Drive name|100 GB</div><div class="option">Sda3<br>/dev/sda3|Drive name|100 GB</div><div class="option">Sda4<br>/dev/sda4|Drive name|100 GB</div>');
 $( "#select" ).on( "click", function() { 
-// $("#select").click(function(e)
     
 			$(this).children(".option").toggleClass("shown");
       $(this).toggleClass("open");
 		});
   $( '#select').on( 'click', '.option', function (e) {
-	//$(".option").click(function()
 		
 			$(this).siblings("#selected").html($(this).html().split("<br>")[0]);
       console.log($(this).siblings("#selected").html()+"bbnbm,");
     });
-  /*
-  $("input").click(function()
-    {
-      var selection = $("#selected").html();
-      alert(selection);
-    });*/
 });
 
   $(".sidebar ul li").on('click' , function(){
@@ -610,7 +629,7 @@ if ($(event.target).closest("#side_nav").length === 0 && $(event.target).closest
 $("#add").on("click" , function(e) {
   if( $("#addtext").val() ) {
 addnode.push($("#addtext").val());
-var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeadd\">";
+var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeadd mb-2 me-2 \">";
 var divpost="<span class=\"badge bg-secondary delbtnadd\">X</span></button>";
 var divadd=divpre+$("#addtext").val()+divpost;
 $("#list1").append(divadd);
@@ -621,7 +640,7 @@ $("#addtext").val("");
 $("#ban").on("click" , function(e) {
   if( $("#bantext").val() ) {
 bannode.push($("#bantext").val());
-var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeban\">";
+var divpre="<button type=\"button\" class=\"btn btn-secondary btnnodeban me-2 mb-2\">";
 var divpost="<span class=\"badge bg-secondary delbtnadd\">X</span></button>";
 var divadd=divpre+$("#bantext").val()+divpost;
 $("#list2").append(divadd);
@@ -652,9 +671,22 @@ $( '#list2').on( 'click', '.btnnodeban', function (e) {
 
 </body>
 <style>
+
+:root {
+scrollbar-color: #5e00b5 transparent;
+scrollbar-width: thin;
+}
+
+:root::-webkit-scrollbar-thumb
+{
+border-radius: 2em;
+}
+
   body
 {
     background-color: #f3e7ff;
+    scrollbar-color: #5e00b5 transparent;
+    scrollbar-width: thin;
 }
 
 #select
@@ -689,8 +721,6 @@ $( '#list2').on( 'click', '.btnnodeban', function (e) {
 }
 #select .option.shown:first-line
 {
-	/*Aquí sobreescribimos el tamaño del
-	texto de la primera línea*/
 	font-size: 20px;
 	line-height: 30px;
 }
@@ -761,6 +791,18 @@ color:#8a2be2;
     justify-content: space-evenly;
 
 }
+
+::-webkit-scrollbar-track {
+  background: #f1f1f100;
+}
+
+
+::-webkit-scrollbar-thumb {
+  background: #5e00b5;
+  border-radius:.5em;
+}
+
+
 
 .mb-0
 {
@@ -835,10 +877,7 @@ color: aliceblue;
     padding: 10px;
     border-radius: 5px;
 }
-.d-flex
-{
-    gap: 10px;
-}
+
 .px-35
 {
     padding-left: 1.2rem!important;

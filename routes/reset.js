@@ -1,8 +1,8 @@
-const express=require("express")
-const fs = require('fs')
-const path = './node.conf'
-const spath = './zcash.conf'
-const jslib = require("../controller/jsonread");
+const express=require("express");
+const fs = require('fs');
+const path = 'db/node.db';
+const spath = './zcash.conf';
+const jslib = require("../controller/helper");
 let resstr="";
 var response="";
 const router=express.Router();
@@ -12,8 +12,8 @@ router.post("/", async (req,res,next)=>{
 var key = req.session.key
 if (!req.session.key) {
 res.send({"error":true, "message":"Login to continue"});
-  }
- else {
+}
+else {
 var resp = await jslib.decryptObj(req.body.encryptedData, req.body.iv, req.body.salt,key);
 if(resp.error)
 {
@@ -22,8 +22,13 @@ res.send(resp);
 else
 {
 try {
-  if (await fs.existsSync(path)&& await fs.existsSync(spath))
+if (await fs.existsSync(path)&& await fs.existsSync(spath))
 {
+var conf = await jslib.readconf();
+console.log(conf.username);
+var cmd = ("sudo userdel "+conf.username+" && sudo groupdel "+conf.username);
+console.log("cmd = "+cmd);
+await require('child_process').exec(cmd, function (msg) { console.log(msg); });
 await fs.unlinkSync(path);
 await fs.unlinkSync(spath);
 var sendmsg = await jslib.encryptData("Device will be reset and reboot. Check in after a few minutes", key);

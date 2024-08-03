@@ -9,7 +9,15 @@
   <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 </head>
 <body>
+<div class="main-container">
+<div class="spinner-wrapper">
+<div class="spinner-border" role="status">
+</div>
+<h2 class="mb-0">Loading...</h2>
+</div>
+<div>
   <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+
     <div class="card text-center">
       <div class="card-header">
         <h1 class="card-title">Error!</h1>
@@ -29,11 +37,36 @@
 	<button class="btn btn-danger px-35" id="reindex-btn">Re-index Blockchain</button>
       </div>
     </div>
-  </div>
+</div>
+</div>
+</div>
 <style>
 body{
 background-color: #f3e7ff;
 }
+
+
+.spinner-wrapper {
+background-color:#f3e7ff;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:999999;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+
+.spinner-border {
+height:3em;
+width:3em;
+color:#8a2be2;
+}
+
+
 
 #update-btn
 {
@@ -61,13 +94,15 @@ background: #9a00bd;
 </style>
   <script>
 const logElement = document.querySelector('.code-block');
-const url = location.origin+'/error'; // Replace with the actual URL
+const url = location.origin+'/error'; 
 const updateurl = location.origin+'/update';
 
+     $('.spinner-wrapper').show();
 
 fetch(url)
   .then(response => response.json()) 
   .then(data => {
+$('.spinner-wrapper').hide();
 if(data.updateavailable==="true")
 {
 $("#update-btn").css("display", "inline-block");
@@ -81,12 +116,13 @@ logElement.textContent = data.errormessage;
 }).catch(error => {logElement.textContent = JSON.stringify(error);console.log(error);});
 
 
+
 	  function encryptObj(dataToEncrypt)
 {
 var passphrase = sessionStorage.getItem("key");
-var salt = CryptoJS.lib.WordArray.random(16); // Generate a random salt
+var salt = CryptoJS.lib.WordArray.random(16); 
     var iterations = 10000;
-    var keySize = 256; // Key size in bits
+    var keySize = 256; 
     var key = CryptoJS.PBKDF2(passphrase, salt, { keySize: keySize / 32, iterations: iterations });
     var iv = CryptoJS.lib.WordArray.random(16);
     var encryptedData = CryptoJS.AES.encrypt(

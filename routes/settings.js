@@ -9,7 +9,7 @@ var errbool=false;
 var errmsg="";
 const path = './node.conf'
 const path1 = require('path');
-const jslib = require("../controller/jsonread");
+const jslib = require("../controller/helper");
 const fetch = require("../controller/fetch");
 
 
@@ -31,38 +31,39 @@ res.send(resp);
 }
 else
 {
-//code for settings req;
-console.log("decrypted fan = "+resp.decrypted.fan+" type of dec = "+typeof(resp.decrypted));
+console.log("decrypted fan = "+resp.decrypted.remote+" type of dec = "+typeof(resp.decrypted));
 var decobj = JSON.parse(resp.decrypted);
-var fan= decobj.fan;
+var remote= decobj.remote;
 var update= decobj.update;
 var tor= decobj.tor;
 var addnode= decobj.add;
 console.log("addnode = "+addnode+" typeof = "+typeof(addnode));
 var bannode= decobj.ban;
 var drv =  decobj.drv;
-var writedata = JSON.parse(resp.msg);
 var settings = {};
-//const drives = await drivelist.list();
-//console.log(JSON.stringify(drives));
-if(fan)
-settings.fan="true";
 if (Array.isArray(bannode) && bannode.length) {
     settings.ban=bannode;
 }
 if (Array.isArray(addnode) && addnode.length) {
     settings.add=addnode;
 }
+if(remote)
+settings.remote="true";
+else
+settings.remote="false";
 if(update)
-settings.update="true";
+settings.updt="true";
+else
+settings.updt="false";
 if(tor)
 {
 settings.tor="true";
 conf+="proxy=127.0.0.1:9050 \n";
 }
+else
+settings.tor="false";
 if(drv!=""||drv!=null)
 settings.drv=drv;
-
 if(addnode.length!=0)
 {
 for(var i=0; i<addnode.length; i++)
@@ -82,7 +83,6 @@ if(retobj.id=="zcashnode"&&retobj.error==null)
 {
 if(bannode.length!=0)
 {
-//console.log("mememem");
 for(var i=0;i<bannode.length;i++)
  {
   data.method="setban";
@@ -94,16 +94,14 @@ for(var i=0;i<bannode.length;i++)
   data.params=newparams;
   retvarfet = await fetch.rpc(data);
   console.log("fetch = ");
-//  console.log(retvarfet);
   retobj = retvarfet;
-//  retobj = JSON.parse(retvarfet);
   if(retobj.error!=null)
   {
         console.log(retobj.error);
 	errbool=true;
 	errmsg = retobj.error;
 	break;
-  } 
+  }
 }
 
 }
@@ -111,16 +109,13 @@ for(var i=0;i<bannode.length;i++)
 
 }
 console.log("\n response = ");
-writedata.settings = settings;
-//writedata.conf = conf;
-console.log(JSON.stringify(writedata));
 var writesettings = {};
-writesettings.node = writedata;
 writesettings.conf = conf;
 if(!errbool)
 {
-var writeret = jslib.writeset(writesettings);
-if(!writeret.error)
+var writezc = jslib.writezconf(writesettings);
+var writeret = await jslib.putsettings(settings);
+if(!writeret.error&&!writezc.error)
 {
 var respstring = "Settings saved successfully. Device will reboot now.";
 var sendmsg = await jslib.encryptData(respstring, key);
@@ -135,7 +130,7 @@ require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { con
 }
 else
 {
-var respmsg = {"error":true , "message":writeret.error};
+var respmsg = {"error":true , "message":writeret.message};
 res.send(respmsg);
 }
 }

@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router()
-const jslib = require("../controller/jsonread");
+const jslib = require("../controller/helper");
 const path = require('path');
 var fs = require('fs');
 var bkpath=path.join(__dirname, "../../mnt/node/walletbackup");
@@ -24,12 +24,7 @@ res.send(resp);
 }
 else
 {
-var meth="z_getoperationstatus";
-var params =[];
-var data = {"method":meth , "params":params};
-var oplist = await fetch.rpc(data);
-if(oplist.error==null)
-{
+
 var decrypted = JSON.parse(resp.decrypted);
 meth="z_listreceivedbyaddress";
 params=[decrypted.from];
@@ -37,8 +32,24 @@ data = {"method":meth , "params":params};
 var ballist = await fetch.rpc(data);
 if(ballist.error==null)
 {
-//res.send({"error":false,"message":{"send":oplist.result,"receive":ballist.result}});
-var sendmsg = await jslib.encryptData({"message":{"send":oplist.result,"receive":ballist.result}}, key);
+var resultrow = [];
+for(var i=0;i<ballist.result.length;i++)
+{
+resultrow.push({"txid":ballist.result[i].txid,"amt":ballist.result[i].amount,"type":"Receive","tmstmp":ballist.result[i].blocktime});
+}
+console.log("Receive only row ");
+console.log(JSON.stringify(resultrow));
+var rows = await jslib.gettxn(decrypted.from);
+for(var i=0;i<rows.length;i++)
+{
+resultrow.push({"txid":rows[i].Txid,"amt":rows[i].Amount,"type":rows[i].Type,"tmstmp":rows[i].Tmstmp});
+}
+console.log("Receive with send row ");
+console.log(JSON.stringify(resultrow));
+resultrow.sort((a, b) => a.tmstmp - b.tmstmp);
+console.log("row sorted");
+console.log(JSON.stringify(resultrow));
+var sendmsg = await jslib.encryptData({"message":{"send":resultrow}}, key);
 if(sendmsg.error)
 res.send(sendmsg);
 else
@@ -46,13 +57,8 @@ res.send({"error":false,"result":sendmsg});
 }
 else
 res.send({"error":true,"message":ballist.error});
-}
-else
-res.send({"error":true,"message":oplist.error});
+
 }
 }
 });
 module.exports=router
-
-
-

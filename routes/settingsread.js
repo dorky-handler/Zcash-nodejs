@@ -4,15 +4,12 @@ var cookieParser = require('cookie-parser');
 router.use(cookieParser());
 router.use(express.json());
 const path = './node.conf'
-const jslib = require("../controller/jsonread");
+const jslib = require("../controller/helper");
 
 router.get("/",async (req,res,next)=>{
 var msg;
-var resp = jslib.jsread();
-//console.log("Settings read=");
-//console.log(resp);
-//var data = JSON.parse(resp.msg);
-msg = {"error":false , message:resp.conf.settings};
+var resp = await jslib.getsettings();
+msg = {"error":false , message:resp.settings};
 res.send(msg);
 });
 module.exports=router

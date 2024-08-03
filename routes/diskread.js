@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router()
-const jslib = require("../controller/jsonread");
+const jslib = require("../controller/helper");
 var cookieParser = require('cookie-parser');
 router.use(cookieParser());
 router.use(express.json());
@@ -13,12 +13,9 @@ await blk.getBlockInfo({}, function(err,json) {
   if (err) {
     console.log("ERROR:" + err);
   } else {
- //  console.log((json[2].SIZE));
-  //res.send(json[0]);
 var diskarray=[];
    for(var i=0;i<json.length;i++)
 {
-//console.log(json[i]);
 if(json[i].SIZE>1073741824&& json[i].PARTITIONS.length === 0)
 diskarray.push(json[i]);
 if(json[i].TYPE==='disk')

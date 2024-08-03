@@ -69,25 +69,44 @@ $('#popupBlockedModal').modal('show');
 }
 
 
+var storageKey;
 
-function encryptObject(objectToEncrypt, key) {
-  // Convert object to JSON string
-  const jsonString = JSON.stringify(objectToEncrypt);
-
-  // Encrypt using Crypto-JS ECB (no IV needed)
-  const ciphertext = CryptoJS.AES.encrypt(jsonString, key, {
-    mode: CryptoJS.mode.ECB,  // Set mode to ECB
-    padding: CryptoJS.pad.Pkcs7,  // Specify padding
-  }).toString();
-
-  return ciphertext;  // No IV to transmit
-}
 fetch('/login', { method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify({"auth": false}) })
   .then(response => response.json())
   .then(data => {
-    if (!data.status) {
-      alert(JSON.stringify(data));
-    } else {
+    
+      var wsurl = "ws://"+location.host+":9999";
+      const wss = new WebSocket(wsurl);
+      wss.addEventListener("open", (event) => {
+        wss.send(data.code);
+      });
+      wss.addEventListener("message", (event) => {
+        var obj = JSON.parse(event.data);
+        if (obj.auth)
+       {
+        console.log("Sending auth");
+        fetch('/login', { method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify({"auth": true}) })
+  .then(response => response.json())
+  .then(data => {
+    if(data.auth)
+    {
+      console.log("recvd auth");
+      sessionStorage.setItem("key",storageKey);
+      location.replace(location.origin);
+    }
+  }).catch(error => {
+    console.error("Error fetching data:", error);
+    alert("An error occurred during authentication. Please try again.");
+  });
+        
+       }
+       else{
+        alert("Username/Password does not match. Please try again!.");
+        location.reload();
+       }
+       
+      });
+
       const popup = window.open(`https://login.zcash.nodecipher.com/?code=${data.code}&origin=${location.href}`, '_blank');
 
 if (popup === null) {
@@ -96,43 +115,27 @@ if (popup === null) {
 
 
 
-      // Handle postMessage from popup
       window.addEventListener('message', (event) => {
-        if (event.origin === 'https://login.zcash.nodecipher.com') { // Verify origin
+        if (event.origin === 'https://login.zcash.nodecipher.com') { 
           console.log('Received postMessage:', event.data);
 
           if (!event.data.socket) {
-            alert("Error please enter username/password again.");
+            alert(event.data.message);
             location.reload();
-          } else if (!event.data.auth) {
-            alert("Error username/password does not match");
-            location.reload();
-          } else if (event.data.code) {
-		var encr =  CryptoJS.AES.encrypt(event.data.code,event.data.code, {
-    mode: CryptoJS.mode.ECB,  // Set mode to ECB
-    padding: CryptoJS.pad.Pkcs7,  // Specify padding
-  }).toString();
-            fetch('/login', { method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify({"auth": true,"key": event.data.code}) })
-              .then(response => response.json())
-              .then(data => {
-                console.log(data);
-                sessionStorage.setItem("key", event.data.code);
-                if (data.auth) {
-                  window.location.replace(location.protocol + "//" + location.host);
-                }
-              })
-              .catch(error => {
-                // Handle fetch errors here
-                console.error("Error fetching data:", error);
-                alert("An error occurred during authentication. Please try again.");
-              });
+          }
+          else
+          {
+            storageKey=event.data.key;
+            setInterval(function () {
+              alert("Error:Timeout!.\nNo response received from device. Try again!.");
+              location.reload();
+            }, 25000);
+            
           }
         }
       });
-    }
   })
   .catch(error => {
-    // Handle initial fetch errors here
     console.error("Error fetching data:", error);
     alert("An error occurred during authentication. Please try again.");
   });

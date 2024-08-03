@@ -1,81 +1,132 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const dbPath =  'db/node.db';
+const fs = require('fs');
 const router=express.Router();
 const crypto = require('crypto');
-const jslib = require("../controller/jsonread");
+const jslib = require("../controller/helper");
 router.use(express.json());
+var code,sessionKey="";
+var connectedClients = {};
 const WebSocket = require('ws');
-const path = require('path'); // Added for serving static files
+const path = require('path');
 
-//const obj = { username: 'ahas', password: 'password' }; // Object for validation
 
-// Generate a 6-digit code
-function generate6DigitCode() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < 6; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
+
+function heartbeat() {
+  clearTimeout(this.pingTimeout);
+  this.pingTimeout = setTimeout(() => {
+    this.terminate();
+  }, 30000 + 1000);
 }
 
-function generate8DigitCode() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < 8; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
+async function WssSetup()
+{
+var rl = await jslib.getRemotelogin();
+if(rl.remotelogin!="false")
+{
+const wss = new WebSocket.Server({ port: 9999 });
+
+
+wss.on('connection', (ws) => {
+  ws.isAlive = true;
+  ws.on('error', console.error);
+  ws.on('pong', heartbeat);
+  ws.on('message', (message) => {
+    var code = message;
+    connectedClients[code] = ws;
+  });
+});
+}
 }
 
+WssSetup();
 
 
 
-router.get('/', (req, res) => {
- res.sendFile(path.join(__dirname, '../views/login.html'));
+router.get('/', async (req, res) => {
+if(fs.existsSync(dbPath)){
+var rl = await jslib.getRemotelogin();
+if(rl.remotelogin!="false")
+res.sendFile(path.join(__dirname, '../views/login.html'));
+else
+res.sendFile(path.join(__dirname, '../views/locallogin.html'));
+}
+else
+res.sendFile(path.join(__dirname, '../views/create.html'));
 });
 
 var key;
 
 router.post('/', async (req, res) => {
-var resp = jslib.jsread();
-var userName = resp.conf.name;
-var pwd = resp.conf.password;
- console.log("conf = "+JSON.stringify(resp.conf));
+var rl = await jslib.getRemotelogin();
+if(rl.remotelogin!="false")
+{
 const response = await fetch('https://login.zcash.nodecipher.com');
+
+
 if(req.body.auth)
 {
-
-if(req.body.key==key)
-{
-req.session.key=key;
-res.send({"auth":true});
+  console.log("Received auth req");
+  if(sessionKey!="")
+  {
+    req.session.key=sessionKey;
+    res.send({"auth":"success"});
+    sessionKey="";
+  }
 }
 else
-res.send({"auth":false});
-}
-else
 {
-  const code = generate6DigitCode();
-  var status=false;
-  const ws = new WebSocket('wss://login.zcash.nodecipher.com:443'); 
-
+  code = jslib.generate6DigitCode();
+  sessionKey="";
+  const ws = new WebSocket('wss://login.zcash.nodecipher.com:443');
+  ws.on('error', console.error);
+  ws.on('ping', heartbeat);
+  ws.on('open', heartbeat);
   ws.on('open', async () => {
-    ws.send(code);
-   status=true;
-   res.send({"code": code,"status":status });
+   ws.send(code);
+   console.log("Ping and pong working");
+   res.send({"code": code });
    console.log("code send code="+code);
   });
 
   ws.on('message', async (message) => {
-    const { username, password } = JSON.parse(message);
+    const { username, password, key } = JSON.parse(message);
     console.log("uname= "+username+" pwd = "+password);
-    key=generate8DigitCode()+generate8DigitCode();
-    const isValid = username === userName && password === pwd; // Perform validation
-    ws.send(JSON.stringify({ "auth":isValid , "code":key })); // Send response back to remote server
-    console.log("isvalid = "+isValid);
-    ws.terminate(); // Close connection
+    var isValid = await jslib.isValid(username,password);
+    if (isValid)
+    sessionKey=key;
+    else
+    console.log("Not valid");
+    ws.send(JSON.stringify({ "auth":isValid}));
+    var client = connectedClients[code];
+    if (client&&client.readyState != WebSocket.CLOSED)
+    {
+      client.send(JSON.stringify({ "auth":isValid }));
+      client.terminate();
+      delete connectedClients[code];
+    }
+    ws.terminate(); 
   });
+
+ws.on('close', function clear() {
+  clearTimeout(this.pingTimeout);
+});
+}
+}
+else
+{
+var userName = req.body.username;
+var pwd = req.body.password;
+var isValid = await jslib.isValid(userName,pwd);
+var key =await jslib.generate8DigitCode();
+if(isValid)
+{
+req.session.key=key;
+res.send({"error":false,"key":key});
+}
+else
+res.send({"error":true,"message":"Username/Password does not match"});
 }
 });
 module.exports=router

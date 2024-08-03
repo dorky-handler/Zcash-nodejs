@@ -1,6 +1,6 @@
 var htmlfirstpart = "<div class=\"element col-md-3 my-3 mx-1 bg-white h-50 text-center rounded shadow \"><div class=\"py-3\"><div class=\"col\"><div class=\"txtcol fnt\"><h5>";
 var htmlscndpart="</h5></div><hr class=\"my-2 text-primary\"></div><div class=\"sz-7 fw-bold\">";
- var htmlthirdpart="</div></div></div>";
+var htmlthirdpart="</div></div></div>";
 var finalhtml = "<div class=\"row mx-2 mt-3 justify-content-between px-4\"></div>";
 $(document).ready(function(){
 jQuery.ajaxSetup({
@@ -55,12 +55,9 @@ $("#mainprogress").css("width",newwid+"%");
 $("#mainprogress").html(Math.round(newwid * 100) / 100 + "%");
 $("#progind").html(response.height+"/"+response.trueheight);
 }
-//alert(newwid);
 $("#console").append(htmlfirstpart+"Height"+htmlscndpart+response.trueheight.toLocaleString()+htmlthirdpart);
 $("#console").append(htmlfirstpart+"Difficulty"+htmlscndpart+Math.round(response.diff*10)/10000 + "M"+htmlthirdpart);
 $("#console").append(htmlfirstpart+"Node client"+htmlscndpart+response.client.slice(1, -1)+htmlthirdpart);
-//$("#console").append(htmlfirstpart+"Chain"+htmlscndpart+response.chain+htmlthirdpart);
-
 $("#console").append(htmlfirstpart+"No. of connections"+htmlscndpart+response.connections+htmlthirdpart);
 $("#console").append(htmlfirstpart+"Size on disk"+htmlscndpart+Math.round(response.sizeondisk*10)/10 +"Gb"+htmlthirdpart);
 $("#console").append(htmlfirstpart+"Uptime"+htmlscndpart+response.uptime+htmlthirdpart);
@@ -96,18 +93,11 @@ else
 {
 if(response.message=="login")
 window.location.replace(window.location.protocol + "//" +location.host + "/login");
-if(response.message=="Loading block index..."||response.message=="Verifying blocks...")
+if(response.message=="Loading block index..."||response.message=="Verifying blocks..."||response.message=="Rescanning..."||response.message=="Rewinding blocks if needed...")
 $("#loadbanner").removeClass("d-none");
 else
 $("#errorbanner").removeClass("d-none");
 }
-//	if(response.redirect!="none"||response.redirect)
-//{
-
-//window.location.replace(location.protocol+"//"+location.host+"/"+response.redirect);
-//}
-
-     // $("#loading").html(response.redirect);
 });
 
 

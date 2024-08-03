@@ -17,4 +17,4 @@ mountdrive.js
 ledtest.js
 encr.js
 fetch-params.sh
-curlinfo.sh
+db/node.db

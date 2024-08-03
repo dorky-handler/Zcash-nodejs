@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const jslib = require("../controller/jsonread");
+const jslib = require("../controller/helper");
 const os = require('os');
 const fetch = require("../controller/fetch");
 let resstr="";
@@ -8,9 +8,6 @@ var cookieParser = require('cookie-parser');
 router.use(cookieParser());
 router.get("/",async (req,res,next)=>{
 var msg;
-var resp=jslib.cookieconf(req.cookies["zcash-ui"]);
-var resp1=jslib.jsread();
-//console.log(resp1);
 if(!req.session.key)
 {
 res.redirect('/login');
@@ -52,7 +49,6 @@ uptime = ut_sec + " seconds";
 if(block.id=="zcashnode"&&block.error==null&&info.id=="zcashnode"&&info.error==null&&totals.id=="zcashnode"&&totals.error==null)
 {
 response.error=false;
-//response.message=block;
 response.dco = block.result.initial_block_download_complete;
 response.diff = block.result.difficulty/1024;
 response.height = block.result.blocks;
@@ -69,11 +65,6 @@ response.os=os.arch();
 response.freemem = os.freemem();
 response.totalmem = os.totalmem();
 response.uptime = uptime;
-if("updateavailable" in resp1.conf)
-response.updateavailable = resp1.conf.updateavailable;
-if("updatename" in resp1.conf)
-response.updatename = resp1.conf.updatename;
-//response.totals = totals.result;
 res.send(response);
 }
 else
@@ -88,46 +79,5 @@ response.message=(totals.error.message);
 res.send(response);
 }
 }
-/*if(resp['error'])
-{
-msg={
-error:true,
-redirect:"register"
-}
-    res.send(msg);
-}
-
-else if(jsonobj.conf.token=="none"||req.cookies["zcash-ui"]!=jsonobj.conf.token)
-{
- msg={
-error:true,
-redirect:"login"
-}
-res.send(msg);
-}
-else
-{
-var obj = jsonobj.conf;
-if(obj=="none")
-{
-msg={
-error:false,
-redirect:"config"
-}
-res.send(msg);
-}
-else
-{
-
-msg=
-{
-error:false,
-redirect:"none",
-blockinfo:"info"
-}
- res.send(msg);
-}
-}
-*/
 });
 module.exports=router

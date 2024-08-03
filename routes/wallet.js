@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router()
-const jslib = require("../controller/jsonread");
+const jslib = require("../controller/helper");
 const path = require('path');
 var cookieParser = require('cookie-parser');
 const fetch = require("../controller/fetch");
@@ -21,7 +21,8 @@ var addresslist = [];
 var key = req.session.key;
 if (!req.session.key) {
 res.send({"error":true, "message":"Login to continue"});
-  }
+
+}
 else
 {
 var resp = await jslib.decryptObj(req.body.encryptedData, req.body.iv, req.body.salt,key);
@@ -39,13 +40,18 @@ if(accountlist.error==null)
 {
 var sendmsg = await jslib.encryptData(accountlist, key);
 if(sendmsg.error)
+{
 res.send(sendmsg);
+console.log("sendmsg error");
+}
 else
 res.send({"error":false,"result":sendmsg});
 }
 else
+{
 res.send({"error":true,"message":accountlist.error});
-//res.send(accountlist);
+console.log("Account list error - ");
+}
 }
 }
 });

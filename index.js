@@ -4,7 +4,7 @@ var mountutil = require('linux-mountutils');
 var fs = require('fs');
 const fetch = require('node-fetch');
 const crypto = require('crypto');
-const jslib = require("./controller/jsonread");
+const jslib = require("./controller/helper");
 var mountdir="/home/pi/mnt";
 var datadir="/home/pi/mnt/node";
 var executablePath = "/home/pi/zcash-nodejs/zcashd";
@@ -13,10 +13,14 @@ const session = require('express-session');
 var rpio = require('rpio');
 var pin = 18;
 
+
+
+
+
 rpio.init({mapping: 'gpio'});
 rpio.open(pin, rpio.OUTPUT, rpio.LOW);
 app.use(session({
-  secret:  "megasecretkey",
+  secret:  jslib.generate8DigitCode(),
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -55,7 +59,6 @@ const { spawn } = require("child_process");
 const homeroute=require("./routes/home.js")
 const dashroute=require("./routes/dashboard.js")
 const loginroute=require("./routes/login.js")
-const notifroute=require("./routes/notification.js")
 const settingsroute=require("./routes/settings.js")
 const resetroute=require("./routes/reset.js")
 const rescanroute = require("./routes/rescan.js");
@@ -65,44 +68,52 @@ const wallroute = require("./routes/wallet.js")
 const newaddr = require("./routes/newaddr.js")
 const settread = require("./routes/settingsread.js")
 const diskread = require("./routes/diskread.js")
-const downld = require("./routes/down.js")
 const wallexport = require("./routes/walletexport.js")
-//const wallimport = require("./routes/walletimport.js")
 const balroute = require("./routes/balance.js")
 const addresslist = require("./routes/addresslist.js")
 const txnhistory = require("./routes/txnhistory.js")
 const shieldroute = require("./routes/shieldfunds.js")
 const sendroute = require("./routes/sendfunds.js")
-//const encroute  = require("./routes/encr.js")
-//const testroute = require("./routes/test.js")
 const errorroute = require("./routes/error.js")
-const updateroute =  require("./routes/update.js");
-var resp=jslib.jsread();
+const updateroute = require("./routes/update.js");
+const chktxnroute = require("./routes/chktxn.js");
+const gettxnroute = require("./routes/gettxn.js");
+var resp={};
+async function readconf()
+{
+resp=await jslib.readconf();
+console.log(resp);
+mountexec();
+}
+
+readconf();
 
 //console.log(resp.error);
+async function mountexec()
+{
 var child;
+console.log("mountexec resp");
+console.log(resp);
 if(!resp.error)
 {
-//console.log(resp.conf);
-    var drive = resp.conf.settings.drv;
+console.log(resp.drv);
+    var drive = resp.drv;
     if(drive)
     {
 var confdir=__dirname+"/zcash.conf";
 console.log(`./zcashd --datadir=${datadir} --exportdir=${datadir} --conf=${confdir}`);
-var err = ('error' in resp.conf);
+var err = resp.err;
 
-mountutil.mount("/dev/"+drive,mountdir, { "createDir": true }, function(result) {
+mountutil.mount("/dev/"+drive,mountdir, { "createDir": true }, async function(result) {
     if (result.error) {
       // Something went wrong!
       console.log(result.error);
-      if(resp.conf.error<3||!err)
+      if(err<3)
         {
-      if('error' in resp.conf)
-      resp.conf.error=resp.conf.error+1;
-      else
-      resp.conf.error=1;
-     resp.conf.errmsg=result.error;
-     var writeret = jslib.writeconf(resp.conf);
+	var wrtobj = {};
+      wrtobj.err=err+1;
+     wrtobj.errmsg=result.error;
+     var writeret = await jslib.updateerror(wrtobj);
         if(!writeret.error)
         require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg); });
         }
@@ -111,7 +122,7 @@ else
 error_blink();
 }
     } else {
-        if(resp.conf.error<3||!err)
+        if(err<3)
         {
         console.log("worked");
         if (!fs.existsSync(datadir)){
@@ -120,19 +131,17 @@ error_blink();
         try {
 	var cmd;
 	var args = [];
-	if(resp.conf.settings.reindex =="true")
+	if(resp.reindex =="true")
 {
 //cmd=`./zcashd --datadir=${datadir} --exportdir=${datadir} --conf=${confdir} --reindex`;
 args = [`--datadir=${datadir}`,`--exportdir=${datadir}`,`--conf=${confdir}`,`--reindex`];
-delete resp.conf.settings.reindex;
-var writeret = jslib.writeconf(resp.conf);
+var writeret = await jslib.reindexreset();
 }
-else if(resp.conf.settings.rescan == "true")
+else if(resp.rescan == "true")
 {
 //cmd=`./zcashd --datadir=${datadir} --exportdir=${datadir} --conf=${confdir} --rescan`;
 args = [`--datadir=${datadir}`,`--exportdir=${datadir}`,`--conf=${confdir}`,`--rescan`];
-delete resp.conf.settings.rescan;
-var writeret = jslib.writeconf(resp.conf);
+var writeret = await jslib.rescanreset();
 }
 else
 {
@@ -151,93 +160,8 @@ child.on('close', (code) => {
   console.log('zcashd process exited with code:', code);
   rebootOnErr();
 });
-
-
-
-
-
-/*
-            child =   exec(cmd, (error, stdout, stderr) => {
-                if (error) {
-    
-
-
-              // console.error(stderr);
-                 
-        if('error' in resp.conf)
-        resp.conf.error=resp.conf.error+1;
-        else
-        resp.conf.error=1;
-        
-        exec(`tail -n 15 ${logfile}`,  (error, stdout, stderr) => {
-           resp.conf.errmsg=(stdout);
-        var writeret = jslib.writeconf(resp.conf);
-        if(!writeret.error)
-        require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg); });
-        
-        
-        
-        
-        
-            });
-        }
-
- if (stderr) {
-
-
-console.log("zcashd exit");
-              console.log(stderr);
-
-        if('error' in resp.conf)
-        resp.conf.error=resp.conf.error+1;
-        else
-        resp.conf.error=1;
-
-        exec(`tail -n 15 ${logfile}`,  (error, stdout, stderr) => {
-           resp.conf.errmsg=(stdout);
-        var writeret = jslib.writeconf(resp.conf);
-        if(!writeret.error)
-        require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg); });
-
-
-
-
-
-            });
-        }
-
-});
-
-*/
-
-
-/*exec.stdout.on('data', function(data) {
-    //Here is where the output goes
-
-    console.log('stdout: ' + data);
-
-});
-        });
-
-
-exec.stdout.on('data', function(data) {
-    //Here is where the output goes
-
-    console.log('stdout: ' + data);
-
-});
-*/
-           // res.json({ message: `User ${username} created successfully!` });
           } catch (error) {
-        
-        /*    console.error(`Error creating user: ${error}`);
-        response = {"error":true,"message":error};
-        if('error' in resp.conf)
-        resp.conf.error=resp.conf.error+1;
-        else
-        resp.conf.error=1;
-        require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg) });*/
-        // res.status(500).json({ error: 'Failed to create user' });
+        rebootOnErr();
           }
         }
         else
@@ -246,65 +170,24 @@ error_blink();
 }
     }
   });
-
-
-/*const startapp=exec("sudo mount /dev/"+drive+" "+datadir+" && ./zcashd --datadir="+datadir+"/node --conf="+__dirname+"/zcash.conf");
-        startapp.stdout.on("data", data => {
-            console.log(`stdout: ${data}`);
-        });
-        startapp.stderr.on("data", data => {
-            console.log(`stderr: ${data}`);
-        });
-	startapp.on('error', (error) => {
-            console.log(`error: ${error.message}`);
-        });
-
-        startapp.on("close", code => {
-            console.log(`child process exited with code ${code}`);
-        });
-*/
-
     }
 }
+}
 
-//const profileroute=require("./routes/profile.js")
-
-/*
-const ls=exec("/home/pi/node/run.sh");
-
-ls.stdout.on("data", data => {
-    console.log(`stdout: ${data}`);
-});
-
-ls.stderr.on("data", data => {
-    console.log(`stderr: ${data}`);
-});
-
-ls.on('error', (error) => {
-    console.log(`error: ${error.message}`);
-});
-
-ls.on("close", code => {
-    console.log(`child process exited with code ${code}`);
-});
-
-
-*/
-
-
-
-function rebootOnErr()
+async function rebootOnErr()
 {
-	if('error' in resp.conf)
-        resp.conf.error=resp.conf.error+1;
-        else
-        resp.conf.error=1;
-        exec(`tail -n 15 ${logfile}`,  (error, stdout, stderr) => {
-           resp.conf.errmsg=(stdout);
-        var writeret = jslib.writeconf(resp.conf);
+	if(require('os').uptime()<5400)
+	{
+        var err = resp.err+1;
+        exec(`tail -n 15 ${logfile}`, async (error, stdout, stderr) => {
+           var errmsg=(stdout);
+        var writeret = await jslib.updateerror({"err":err,"errmsg":errmsg});
         if(!writeret.error)
         require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg); });
         });
+}
+else
+ require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg); });
 }
 
 
@@ -315,10 +198,13 @@ try {
         const response = await fetch('https://update.zcash.nodecipher.com/', {
       method: 'POST',   });
   const updateInfo = await response.json();
-    const currentFileMd5 = crypto.createHash('md5').update(fs.readFileSync(executablePath)).digest('hex');
-    if (updateInfo.md5sum !== currentFileMd5) {
+  console.log("received response from update server");
+    const currentFileMd5 = await crypto.createHash('md5').update(fs.readFileSync(executablePath)).digest('hex');
+     console.log(currentFileMd5);
+	console.log(updateInfo);
+	if (updateInfo.md5sum !== currentFileMd5) {
 console.log("remote md5 not matching with local initiating update function");
-if(resp.conf.settings.update==="true")
+if(resp.update==="true")
 {
 console.log("Killing zcashd and starting download");
         var updateid = update_blink();
@@ -326,12 +212,12 @@ console.log("Killing zcashd and starting download");
       const downloadResponse = await fetch("https://"+updateInfo.downloadurl);
       const newFileBuffer = await downloadResponse.buffer();
         console.log("download complete");
-      const newFileMd5 = crypto.createHash('md5').update(newFileBuffer).digest('hex');
+      const newFileMd5 = await crypto.createHash('md5').update(newFileBuffer).digest('hex');
         console.log("new donwload file md5 = "+newFileMd5);
       if (newFileMd5 === updateInfo.md5sum) {
-        fs.renameSync(executablePath, executablePath + '.old');
-        fs.writeFileSync(executablePath, newFileBuffer);
-        fs.chmodSync(executablePath, 0o755);
+        await fs.renameSync(executablePath, executablePath + '.old');
+        await fs.writeFileSync(executablePath, newFileBuffer);
+        await fs.chmodSync(executablePath, 0o755);
         console.log("rename complte");
         require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg); });
       } else {
@@ -342,10 +228,7 @@ console.log("Killing zcashd and starting download");
 }
 else
 {
-resp.conf.updateavailable="true";
-resp.conf.updatename=updateInfo.name;
-var writeret = jslib.writeconf(resp.conf);
-console.log("Update logged to system");
+
 }
 
     }
@@ -354,7 +237,7 @@ console.log("Update logged to system");
   }
 
 
-} , 10*60*1000);
+} , 12*60*60*1000);
 
 
 
@@ -367,12 +250,10 @@ app.use("/reset",resetroute)
 app.use("/reindex", reindexroute);
 app.use("/rescan", rescanroute);
 app.use("/register",regroute)
-app.use("/notifications",notifroute)
 app.use("/dashboard",dashroute)
 app.use("/wallet",wallroute)
 app.use("/settread",settread)
 app.use("/diskread",diskread)
-app.use("/download",downld)
 app.use("/walletexport",wallexport)
 //app.use("/walletimport",wallimport)
 app.use("/newaddr" , newaddr)
@@ -385,7 +266,8 @@ app.use("/send",sendroute)
 //app.use("/test" , testroute)
 app.use("/error" , errorroute)
 app.use("/update" , updateroute)
-
+app.use("/chktxn", chktxnroute)
+app.use("/gettxn", gettxnroute)
 app.listen((80),()=>{
 
     console.log("Server is Running")

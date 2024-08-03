@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router()
-const jslib = require("../controller/jsonread");
+const jslib = require("../controller/helper");
 const path = require('path');
 var fs = require('fs');
 var bkpath=path.join(__dirname, "../../mnt/node/walletbackup");
@@ -34,7 +34,6 @@ var data = {"method":meth , "params":params};
 var wtrq = await fetch.rpc(data);
 if(wtrq.error==null)
 {
-//res.download(wtrq.result,"walletbackup");
 var data = await fs.readFileSync(wtrq.result, 'utf-8');
 console.log(data);
 var sendmsg = await jslib.encryptData(data, key);

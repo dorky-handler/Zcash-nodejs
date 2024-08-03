@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router()
-const jslib = require("../controller/jsonread");
+const jslib = require("../controller/helper");
 const path = require('path');
 var cookieParser = require('cookie-parser');
 const fetch = require("../controller/fetch");
@@ -22,7 +22,6 @@ res.send(resp);
 }
 else
 {
-//code for settings req;
 var decobj = JSON.parse(resp.decrypted);
 var meth="z_getbalanceforaccount";
 var params =[decobj.account];

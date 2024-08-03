@@ -99,17 +99,17 @@
                      </select>
                 </div>
                 <div class="col-md-3 my-2">
-                  <button id="newaddress" class="btn btn-copy btn-primary ">
+                  <button id="newaddress" class="btn btn-copy btn-primary p-3">
                    New address <i class="fa-solid fa-plus"></i>
                   </button>
                 </div>
                 <div class="col-md-3 my-2">
-                  <button id="receivebtn" class="btn btn-copy btn-primary ">
+                  <button id="receivebtn" class="btn btn-copy btn-primary p-3">
                     Receive funds<i class="fa-solid fa-copy"></i>
                   </button>
                 </div>
                 <div class="col-md-3 my-2">
-                  <button id="txnhistory" class="btn btn-copy btn-primary ">
+                  <button id="txnhistory" class="btn btn-copy btn-primary p-3">
                     Transaction history <i class="fa-solid fa-clock-rotate-left"></i>
                   </button>
                 </div>
@@ -220,8 +220,10 @@
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Transactions</h5>
       </div>
-      <div id="txbody" class="modal-body">
-
+      <div id="txnbody" class="modal-body">
+	<div id="txntable">
+	
+	</div>
 
 </div>
       <div class="modal-footer">
@@ -233,6 +235,61 @@
 
 
 
+<div class="modal fade" id="gettxnmodal" tabindex="-1" role="dialog" aria-labelledby="txnmodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Transaction Details</h5>
+      </div>
+      <div id="Txndetailsbody" class="modal-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-center fw-bold" style="color:#5e00b5">
+	<div class="col-6 fs-5">Transaction ID : </div>
+	<div class="col-6 " style="overflow-wrap: anywhere;"><div class="d-flex flex-wrap justify-content-between align-items-center"><div class="col-8" id="blktxn" style="overflow-wrap: anywhere;">Newtxidrjhejhdbmndndnn3m3nm3nwmn3n3m3m2nemn34ementgkengm</div><div class="col-1"><i id="txncopy" class="fa-solid fa-copy fa-xl"></i></div><div class="vr"></div><div id="txnlink" class="col-1"> <i class="fa-solid fa-link fa-xl"></i></div></div></div>
+        <div class="col-6 fs-5">Block Height : </div>
+        <div class="col-6 " id="blkhei">23437372</div>
+        <div class="col-6 fs-5">Confirmations : </div>
+        <div class="col-6 " id="blkcnf">270</div>
+        <div class="col-6 fs-5">Transaction Type : </div>
+        <div class="col-6 " id="blktyp">Shield</div>
+        <div class="col-6 fs-5">Transaction Status</div>
+        <div class="col-6 " id="blksta">Mined</div>
+        <div class="col-6 fs-5">Amount : </div>
+        <div class="col-6 " id="blkamt"> 0.001 Zec</div>
+        <div class="col-6 fs-5">Time : </div>
+        <div class="col-6 " id="blktim">24/07/2024 13:55Am</div>
+	</div>
+
+</div>
+      <div class="modal-footer">
+        <button id="gettxnclosemodal" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="walletimportmodal" tabindex="-1" role="dialog" aria-labelledby="txnmodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="">Import Wallet Instructions</h5>
+      </div>
+      <div id="Importwalletbody" class="modal-body fw-bold" style="color:#5e00b5">
+      Currently , Zcashd does not support importing account from a backup phrase. <br> To manually import any wallet.dat backup , replace the current wallet.dat file inside the Zcash folder of your removable drive.
+      </div>
+
+      <div class="modal-footer">
+        <button id="importclosemodal" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 <div class="modal fade" id="shieldmodal" tabindex="-1" role="dialog" aria-labelledby="shieldmodal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
@@ -240,11 +297,11 @@
         <h5 class="modal-title" id="exampleModalLongTitle">Shielding confirmation</h5>
       </div>
       <div id="txbody" class="modal-body">
-<h4 id="confirmhead" class="mb-0 text-center">
-Confirm shielding amount 0.03z from tdhjh2h1kh12k3ehrbjkknj ?
-</h4>
+	<h4 id="confirmhead" class="mb-0 text-center">
+		Confirm shielding amount 0.03z from tdhjh2h1kh12k3ehrbjkknj ?
+	</h4>
 
-</div>
+      </div>
       <div class="modal-footer">
 	<button id="shcnfbtn" type="button" class="btn btn-primary">Shield funds</button>
         <button id="closemodal2" type="button" class="btn btn-primary">Close</button>
@@ -254,11 +311,186 @@ Confirm shielding amount 0.03z from tdhjh2h1kh12k3ehrbjkknj ?
 </div>
 
 
+<div class="modal fade" id="confirmtxnmodal" tabindex="-1" role="dialog" aria-labelledby="confirmtxnmodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Confirm sending transaction</h5>
+      </div>
+      <div id="txbody" class="modal-body">
+        <h4 id="confirmtxnhead" class="mb-0 text-center">
+                Confirm sending amount 0.03z to tdhjh2h1kh12k3ehrbjkknj ?
+        </h4>
+
+      </div>
+      <div class="modal-footer">
+        <button id="sendconfirmbtn" type="button" class="btn btn-primary">Confirm Transaction</button>
+        <button id="closetxnmodal" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="txnloadingmodal" tabindex="-1" role="dialog" aria-labelledby="confirmtxnmodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div id="txbody" class="modal-body">
+	<div class="txnloader"><div></div><div></div><div></div></div>
+        <h4 class="mb-0 text-center">
+                Executing transaction , please wait for 5-15 seconds...
+        </h4>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="txnalertmodal" tabindex="-1" role="dialog" aria-labelledby="txnalertmodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Transaction Alert !</h5>
+      </div>
+      <div id="txnbody" class="modal-body">
+        <h4 id="txnalerthead" class="mb-0 text-center">
+	TXn Alert ....
+        </h4>
+
+      </div>
+      <div class="modal-footer">
+        <button id="closetxnalertmodal" type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 <script>
 
+
+async function showtxn(txid,type,amt)
+{
+var encrypt = await encryptObj({txid:txid});
+ $.ajax({
+     contentType: 'application/json',
+        type: "POST",
+        url: location.protocol+"//"+location.host+"/gettxn",
+        data: JSON.stringify(encrypt),
+        datatype: 'json',
+        success: async function(res) {
+               if(res.error==true)
+                alert("Error\n"+JSON.stringify(res.message));
+                else
+                {
+                var decryptedData = await decryptData(res.result.encryptedData, res.result.iv, res.result.salt, sessionStorage.getItem("key"));
+                var result = JSON.parse(decryptedData);
+		console.log("Gettxn = ");
+		console.log(JSON.stringify(result));
+		$("#blkhei").html(result.message.height);
+		$("#blkcnf").html(result.message.confirmations);
+		$("#blktxn").html(txid);
+		$("#blksta").html(result.message.status);
+		$("#blkamt").html(amt);
+		$("#blktyp").html(type);
+		$("#txnlink").html("<a style=\"color: #5e00b5;\" href=\"https://mainnet.zcashexplorer.app/transactions/"+ txid +"\" target=\"_blank\"> <i class=\"fa-solid fa-link fa-xl\"></i></a>")
+		$("#blktim").html(new Date(result.message.timestamp*1000).toLocaleString());
+		$("#gettxnmodal").modal("show");
+		$("#txnmodal").modal("hide");
+                }
+                },
+        error: function(result) {
+            alert('encountered error '+ JSON.stringify(result));
+        }
+    });
+
+}
+
+
+
+function encryptObj(dataToEncrypt)
+{
+
+var passphrase = sessionStorage.getItem("key");
+var salt = CryptoJS.lib.WordArray.random(16); 
+    var iterations = 10000;
+    var keySize = 256; 
+    var key = CryptoJS.PBKDF2(passphrase, salt, { keySize: keySize / 32, iterations: iterations });
+    var iv = CryptoJS.lib.WordArray.random(16);
+    var encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(dataToEncrypt),
+      key,
+      { iv: iv, mode: CryptoJS.mode.CBC }
+    ).toString();
+
+return {"encryptedData":encryptedData , "iv": iv.toString(), "salt": salt.toString()};
+
+}
+
+
+async function decryptData(encryptedData, iv, salt, passphrase) {
+      const key = CryptoJS.PBKDF2(passphrase, CryptoJS.enc.Hex.parse(salt), { keySize: 256 / 32, iterations: 10000 });
+      const ivWordArray = CryptoJS.enc.Hex.parse(iv);
+      const decryptedData = CryptoJS.AES.decrypt(encryptedData, key, { iv: ivWordArray  ,mode: CryptoJS.mode.CBC}).toString(CryptoJS.enc.Utf8);
+return decryptedData
+  }
+
+async function chktxn(op,sendtype,amount)
+{
+console.log("Chktxn op - ");
+console.log((op));
+var encrypt = await encryptObj({opid:op,type:sendtype,amt:amount,fromadr:$("#walletlist").find(":selected").val()});
+ $.ajax({
+     contentType: 'application/json',
+        type: "POST",
+        url: location.protocol+"//"+location.host+"/chktxn",
+        data: JSON.stringify(encrypt),
+        datatype: 'json',
+        success: async function(res) {
+               if(res.error==true)
+                {
+		$("#txnalerthead").html("<b> <u>Error </u> </b> <br> " + JSON.stringify(res.message));
+		$("#txnalertmodal").modal("show"); 
+		$("#txnloadingmodal").modal("hide");
+		}	
+                else
+                {
+                 var decryptedData = await decryptData(res.result.encryptedData, res.result.iv, res.result.salt, sessionStorage.getItem("key"));
+                var result = JSON.parse(decryptedData);
+                if(result.message!=="success")
+                {
+                 console.log("Executing");
+                 console.log("encrypt = ");
+                 console.log(JSON.stringify(encrypt));
+                 setTimeout(chktxn, 5000, op, sendtype,amount);
+                }
+                else{
+                $("#txnalerthead").html("Transaction sent Successfully.<br> Transaction ID - <a href=\"https://mainnet.zcashexplorer.app/transactions/" + (result.txid) + "\" >" + (result.txid) + "</a>");
+                $("#txnalertmodal").modal("show");
+                }
+                }
+                },
+        error: function(result) {
+            alert('encountered error '+ JSON.stringify(result));
+        }
+    });
+}
+
+
+
+
+
+
   function openssh() {
-  var newUrl ="https://"+window.location.host+":4200"; // Replace existing port
-  window.open(newUrl, "_blank"); // Open in new tab
+  var newUrl ="https://"+window.location.host+":4200"; 
+  window.open(newUrl, "_blank"); 
 }
 	
 $(document).ready(async function()
@@ -275,6 +507,33 @@ jQuery.ajaxSetup({
 
 
 
+jQuery.fn.selectText = function(){
+    this.find('input').each(function() {
+        if($(this).prev().length == 0 || !$(this).prev().hasClass('p_copy')) { 
+            $('<p class="p_copy" style="position: absolute; z-index: -1;"></p>').insertBefore($(this));
+        }
+        $(this).prev().html($(this).val());
+    });
+    var doc = document;
+    var element = this[0];
+    console.log(this, element);
+    if (doc.body.createTextRange) {
+        var range = document.body.createTextRange();
+        range.moveToElementText(element);
+        range.select();
+    } else if (window.getSelection) {
+        var selection = window.getSelection();        
+        var range = document.createRange();
+        range.selectNodeContents(element);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+};
+
+
+
+
+
 
 if(!sessionStorage.getItem("key"))
 location.replace(location.origin+"/login");
@@ -285,6 +544,9 @@ sessionStorage.clear();
 location.replace(location.origin+"/login");
 });
 
+$("#txncopy").on("click" , function(e) {
+$("#blktxn").selectText();
+});
 
 var ualist=[],addlist=[],sapbal=0,trbal=0,orbal=0;
 
@@ -294,10 +556,29 @@ $('#receivemodal').modal('hide');
 
 });
 
+$("#closetxnalertmodal").on('click' , function() {
+
+$("#txnalertmodal").modal('hide');
+location.reload();
+});
+
+$("#gettxnclosemodal").on('click' , function() {
+
+$('#gettxnmodal').modal('hide');
+$('#txnmodal').modal('show');
+});
+
+
 
 $("#closemodal1").on('click' , function() {
 
 $('#txnmodal').modal('hide');
+
+});
+
+$("#closetxnmodal").on('click' , function() {
+
+$('#confirmtxnmodal').modal('hide');
 
 });
 
@@ -346,8 +627,8 @@ $.ajax({
 			 var decryptedData = await decryptData(result1.result.encryptedData, result1.result.iv, result1.result.salt, sessionStorage.getItem("key"));
                         var result = JSON.parse(decryptedData);
                         console.log(result);
-			alert("Transaction done with Opid - "+result.result.opid);
-			location.reload();
+			$("#txnloadingmodal").modal("show");
+			chktxn((result.result.opid),"Shield",trbal);
 		}
 		 else
                 alert("Error encountered - "+JSON.stringify(result1));
@@ -394,59 +675,13 @@ $("#amt").val(zec);
 });
 
 $("#importbkp").on('click' , function() {
-alert("Feature coming soon!...");
-
+$("#walletimportmodal").modal("show");
 });
 
-/*
-$("#importbkp").on('click' , function() {
-
-var input = document.createElement("input");
-                input.type = "file";
-                input.setAttribute("id", "inpfile");
-  input.click();
-input.addEventListener('change', function() { 
-              
-            var fr=new FileReader(); 
-            fr.onload=function(){ 
- 
-var ll = fr.result.split(/\r?\n/);
-if(ll[ll.length-2]==="# End of dump")
-{
-alert("Uploading file");
-console.log(fr.result);
-$.ajax({
-     contentType: 'application/json',
-        type: "POST",
-        url: location.protocol+"//"+location.host+"/walletimport",
-        data: JSON.stringify({
-            input: fr.result
-            }),
-        datatype: 'json',
-        success: function(result) {
-               if(result.error=="false")
-                {
-                
-		}
-		else
-                alert(result.message.error);
-                },
-        error: function(result) {
-            alert('error');
-        }
+$("#importclosemodal").on('click' , function() {
+$("#walletimportmodal").modal("hide");
 });
 
-}
-else
-alert("Invalid fie");
-            } 
-              
-            fr.readAsText(this.files[0]); 
-        }) 
-
-  
-});
-*/
 
 $("#receivebtn").on('click' , async function() {
 if($("#walletlist").find(":selected").val()=="")
@@ -464,11 +699,9 @@ $.ajax({
         success: async function(res) {
                if(res.error==false)
 		{
-                //console.log(result.message.result);
  var decryptedData = await decryptData(res.message.encryptedData, res.message.iv, res.message.salt, sessionStorage.getItem("key"));
 var result = JSON.parse(decryptedData);
 result = result.result;
-//console.log(result);
 		$("#qrcodeua").html("");
                 var qrcode = new QRCode(document.getElementById("qrcodeua"), {
 	text: $("#walletlist").find(":selected").val(),
@@ -519,17 +752,11 @@ function encryptObj(dataToEncrypt)
 {
 
 var passphrase = sessionStorage.getItem("key");
-var salt = CryptoJS.lib.WordArray.random(16); // Generate a random salt
+var salt = CryptoJS.lib.WordArray.random(16); 
     var iterations = 10000;
-    var keySize = 256; // Key size in bits
-
-    // Perform PBKDF2 key derivation
+    var keySize = 256; 
     var key = CryptoJS.PBKDF2(passphrase, salt, { keySize: keySize / 32, iterations: iterations });
-
-    // Generate a random 16-byte IV (Initialization Vector)
     var iv = CryptoJS.lib.WordArray.random(16);
-
-    // Encrypt the data with AES-256 and the derived key and IV
     var encryptedData = CryptoJS.AES.encrypt(
       JSON.stringify(dataToEncrypt),
       key,
@@ -585,6 +812,20 @@ $.ajax({
 });
 
 
+async function deleteduplicate(result)
+{
+var txid="";
+for (var i=0;i<result.length;i++)
+	{
+		if(txid===result[i].txid)
+		result.splice(i-1, 1);
+		else
+		txid=result[i].txid;
+	}
+return result;
+}
+
+
 $("#txnhistory").on("click" , async function(e) {
 var dataToEncrypt = {"from" : $("#walletlist").find(":selected").val()};
 var encrypt = await encryptObj(dataToEncrypt);
@@ -604,86 +845,49 @@ $.ajax({
 		  var decryptedData = await decryptData(res1.result.encryptedData, res1.result.iv, res1.result.salt, sessionStorage.getItem("key"));
                   var result1 = JSON.parse(decryptedData);
 		  console.log("result 1 = "+JSON.stringify(result1));
-		  var appendstr="",result=result1.message.send,ele;
+		  var appendstr="",txnlist=result1.message.send,ele;
+		  var txdivstartsend = `")' class="d-flex flex-wrap justify-content-between align-items-center" style="color:#5e00b5"><div class="txicon col-1 ">
+		  <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" fill="#8a2be2" class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
+  		  <path fill-rule="evenodd" d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8m-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5"/>
+		  </svg>
+		  </div><div class="txid col-9 col-lg-5 overflow-hidden text-truncate fs-2">`;
+		  var txdivstartrec = `")' class="d-flex flex-wrap justify-content-between align-items-center" style="color:#5e00b5"><div class="txicon col-1 ">
+		  <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" fill="#8a2be2" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+		  <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5"/>
+		  </svg>
+		  </div><div class="txid col-9 col-lg-5 overflow-hidden text-truncate fs-2">`;
+		  var txdivstartshield = `")' class="d-flex flex-wrap justify-content-between align-items-center" style="color:#5e00b5"><div class="txicon col-1 ">
+		  <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" fill="#8a2be2" class="bi bi-shield-lock-fill" viewBox="0 0 16 16">
+		  <path fill-rule="evenodd" d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0m0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5"/>
+		  </svg>
+		  </div><div class="txid col-9 col-lg-5 overflow-hidden text-truncate fs-2">`;
+		  var txdivamt = `</div><div class="txamt col-5 col-lg-2">`;
+		  var txdivtime = `</div><div class="txtime col-5 col-lg-2">`;
+		  var txdivend = `</div><div class="col col-lg-1"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="#8a2be2" class="bi bi-caret-right-square-fill" viewBox="0 0 16 16">
+		  <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5.5 10a.5.5 0 0 0 .832.374l4.5-4a.5.5 0 0 0 0-.748l-4.5-4A.5.5 0 0 0 5.5 4z"/>
+		  </svg></div></div><hr class="w-80">`;
+		
+		  var result = await deleteduplicate(txnlist);
+		
 		  for(var i=0;i<result.length;i++)
-			{
-				if(result[i].params.fromaddress==$("#walletlist").find(":selected").val())
-				{
-					var msg ="" , msgid = "";
-					if(result[i].status=="failed")
-					{
-						msg = result[i].error.message;msgid="Message : ";
-					}
-					if(result[i].status=="success")
-                                        {
-                                                msg = "<a href=\"https://zcashblockexplorer.com/transactions/"+result[i].result.txid+"\" target=\"_blank\">"+result[i].result.txid+"</a>";msgid="Transaction : ";
-                                        }
-					appendstr+=ele = `<div class="accordion" id="a${result[i].id}">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="h${result[i].id}">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c${result[i].id}">
-       <i class="fa-solid fa-share-from-square"></i>  Send - ${result[i].id}
-      </button>
-    </h2>
-    <div id="c${result[i].id}" class="accordion-collapse collapse data-bs-parent="#a${result[i].id}">
-      <div class="accordion-body">
-	   <div class="row">
-          <div class="col-6">
-            <div class="mb-0">Status : </div>${result[i].status}
-          </div>
-          <div class="col-6">
-            <div class="mb-0">Amount : </div>${result[i].params.amounts[0].amount}
-          </div>
- <div class="col-12 text-break ">
-            <div class="mb-0">Address : </div>${result[i].params.amounts[0].address}
-          </div>
-          <div class="col-12 text-break ">
-	   <div class="mb-0">${msgid}</div>${msg}
-	  </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>`;
 
-				}
-			}
-result=result1.message.receive; 
-for(var i=0;i<result.length;i++)
-                        {
-			var msg ="" , msgid = "";   
-                       msg = "<a href=\"https://zcashblockexplorer.com/transactions/"+result[i].txid+"\" target=\"_blank\">"+result[i].txid+"</a>";
-                                        appendstr+=ele = `<div class="accordion" id="a${result[i].txid}">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="h${result[i].txid}">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c${result[i].txid}">
-      <i class="fa-solid fa-right-to-bracket"></i>  Receive - ${result[i].pool}
-      </button>
-    </h2>
-    <div id="c${result[i].txid}" class="accordion-collapse collapse data-bs-parent="#a${result[i].txid}">
-      <div class="accordion-body">
-           <div class="row">
-          <div class="col-6">
-            <div class="mb-0">Confirmations : </div>${result[i].confirmations}
-          </div>
-          <div class="col-6">
-            <div class="mb-0">Amount : </div>${result[i].amount}
-          </div>
-          <div class="col-12 text-break ">
-           <div class="mb-0">${msgid}</div>${msg}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>`;
+		  {
+			
+			var txdivstart="<div onclick='showtxn(\""+result[i].txid+"\",\""+result[i].type+"\",\""+result[i].amt;
+			if(result[i].type==="Receive")
+			txdivstart+=txdivstartrec
+			if(result[i].type==="Send")
+                        txdivstart+=txdivstartsend
+			if(result[i].type==="Shield")
+                        txdivstart+=txdivstartshield
+			var txappend = txdivstart + result[i].txid + txdivamt + "Amount:<br>"+ result[i].amt +" Zec" + txdivtime + "Time: "+ new Date(result[i].tmstmp*1000).toLocaleString()  + txdivend ;
+
+			appendstr+=txappend;
+                  }
 
 
-                                }
+		  $("#txntable").html(appendstr);	
 
-
-	console.log(appendstr);
-$("#txbody").html(appendstr);	
 	}
   		else
                 alert('Error encountered - '+JSON.stringify(res1));
@@ -693,18 +897,14 @@ $("#txbody").html(appendstr);
         }
 });
 
+
+
 $("#txnmodal").modal("show");
 
 });
 
 
 $("#walletbkp").on("click" , async  function(e) {
-//const a = document.createElement('a')
- //a.href = url
-  //a.download = url.split('/').pop()
-  //document.body.appendChild(a)
-  //a.click()
-  //document.body.removeChild(a);
 var encrypt = await encryptObj({type: "download"});
  $.ajax({
      contentType: 'application/json',
@@ -720,8 +920,6 @@ type: "POST",
                 var decryptedData = await decryptData(res.result.encryptedData, res.result.iv, res.result.salt, sessionStorage.getItem("key"));
                 var result = JSON.parse(decryptedData);
 		downloadObject(result , "Wallet_Backup");
-                //console.log("download = "+ JSON.stringify(result));
-		//alert("Transaction success. Operation ID - "+JSON.stringify(result.result));
                 }
                 },
         error: function(result) {
@@ -738,23 +936,41 @@ type: "POST",
 
 
 function downloadObject(data, filename) {
-  // Create a blob object from the data
   const blob = new Blob([JSON.stringify(data)], { type: 'application/octet-stream' });
-
-  // Create a download link with the blob as a source
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = filename;
-
-  // Simulate a click on the link to trigger download
   link.click();
-
-  // Revoke the object URL after download is triggered
   URL.revokeObjectURL(link.href);
 }
 
 
 $("#sendfund").on("click" , async function(e) {
+$("#confirmtxnmodal").modal("show");
+var confirmtxt="";
+if(!$("#toaddr").val())
+alert("Enter valid Zcash address");
+else if(!$("#amt").val())
+alert("Enter valid amount");
+else if($("#txnchk").is(':checked')&&!$("#txnfees").val())
+alert("Enter valid transaction fees");
+else if(!$("#walletlist").find(":selected").val())
+alert("Select from wallet");
+else if($("#amt").val()>=sapbal+orbal)
+alert("Enter an amount less than funds from the shielded pool. For using funds from transparent addresses without violating your privacy , shield your funds first.");
+else
+{
+if($("#txnchk").is(':checked'))
+confirmtxt="Are you sure you want to send ,<br> "+ $("#amt").val() +" Zec <br> to address , " + $("#toaddr").val() + " <br> with Transaction fees - " + $("#txnfees").val() + " Zec?";
+else
+confirmtxt="Are you sure you want to send , <br>"+ $("#amt").val() +" Zec <br> to address , " + $("#toaddr").val() + " ?";
+$("#confirmtxnhead").html(confirmtxt);
+}
+});
+
+
+$("#sendconfirmbtn").on("click" , async function(e) {
+$("#confirmtxnmodal").modal("hide");
 if(!$("#toaddr").val())
 alert("Enter valid Zcash address");
 else if(!$("#amt").val())
@@ -787,7 +1003,8 @@ type: "POST",
 		{
 		 var decryptedData = await decryptData(res.result.encryptedData, res.result.iv, res.result.salt, sessionStorage.getItem("key"));
                 var result = JSON.parse(decryptedData);
-		alert("Transaction success. Operation ID - "+JSON.stringify(result.result));
+		$("#txnloadingmodal").modal("show");
+		chktxn((result.result),"Send", $("#amt").val());
 		}
 		},
         error: function(result) {
@@ -797,7 +1014,6 @@ type: "POST",
 }
 
 });
-
 
 $("#newaddress").on("click" , async function(e) {
 var encrypt = await encryptObj({type: "new"});
@@ -815,6 +1031,7 @@ type: "POST",
                 var decryptedData = await decryptData(res.message.encryptedData, res.message.iv, res.message.salt, sessionStorage.getItem("key"));
                 var result = JSON.parse(decryptedData);
                 alert("Result - "+result.message);
+		location.reload();
                 }
 		},
         error: function(result) {
@@ -832,17 +1049,14 @@ type: "POST",
         data: JSON.stringify(encrypt),
         datatype: 'json',
         success: async function(res) {
-               //alert(result.message);
 		if(res.error)
 		{alert("Error encountered - "+JSON.stringify(res.message));}
 		else{
 		var decryptedData = await decryptData(res.result.encryptedData, res.result.iv, res.result.salt, sessionStorage.getItem("key"));
                 var result = JSON.parse(decryptedData);
-		//console.log(result);
 		ualist=result;
 		result.result.forEach((key, index) => {
   			addlist[index] ='<option value="'+ key.addresses[0].ua +'">'+ key.addresses[0].ua +'</option>' ;
-			//addlist[index] ='<option value="'+ key.sapling +'">'+ key.sapling +'</option>' ;
 			console.log(key);
 			
 		});
@@ -883,6 +1097,19 @@ if ($(event.target).closest("#side_nav").length === 0 && $(event.target).closest
 
 
 <style>
+
+:root {
+scrollbar-color: #5e00b5 transparent;
+scrollbar-width: thin;
+}
+
+:root::-webkit-scrollbar-thumb
+{
+border-radius: 2em;
+}
+
+
+
   body
 {
     background-color: #f3e7ff;
@@ -924,6 +1151,65 @@ background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/s
 background-image : url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important ;
 
 }
+
+#txntable
+{
+max-height:70vh;
+overflow:auto;
+scrollbar-width:thin;
+}
+
+
+
+.txnloader
+{
+color:#8a2be2;
+}
+
+.txnloader,
+.txnloader div {
+  box-sizing: border-box;
+}
+.txnloader {
+  display: block;
+  margin:auto;
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+.txnloader div {
+  display: inline-block;
+  position: absolute;
+  left: 20px;
+  width: 40px;
+  background: currentColor;
+  animation: txnloader 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+.txnloader div:nth-child(1) {
+  left: 20px;
+  animation-delay: -0.24s;
+}
+.txnloader div:nth-child(2) {
+  left: 80px;
+  animation-delay: -0.12s;
+}
+.txnloader div:nth-child(3) {
+  left: 140px;
+  animation-delay: 0s;
+}
+@keyframes txnloader {
+  0% {
+    top: 20px;
+    height: 160px;
+  }
+  50%, 100% {
+    top: 60px;
+    height: 80px;
+  }
+}
+
+
+
 
 
 .tend
@@ -1052,7 +1338,15 @@ width:3em;
 color:#8a2be2;
 }
 
+::-webkit-scrollbar-track {
+  background: #f1f1f100; 
+}
+ 
 
+::-webkit-scrollbar-thumb {
+  background: #5e00b5; 
+  border-radius:.5em;
+}
 
 .content
 {
@@ -1103,10 +1397,7 @@ color: aliceblue;
     padding: 10px;
     border-radius: 5px;
 }
-.d-flex
-{
-    gap: 10px;
-}
+
 .px-35
 {
     padding-left: 1.2rem!important;
