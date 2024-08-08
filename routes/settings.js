@@ -1,6 +1,5 @@
 const express=require("express");
 const router=express.Router();
-const drivelist = require('drivelist');
 var cookieParser = require('cookie-parser');
 router.use(cookieParser());
 router.use(express.json());
