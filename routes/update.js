@@ -16,7 +16,7 @@ res.send({"error":true,"message":"Login before updating the device."});
   }
 else
 {
- const response = await fetch('https://update.zcashnode.stagnum.finance/', {
+ const response = await fetch('https://update.zcash.nodecipher.com', {
       method: 'POST',   });
 
   const updateInfo = await response.json();
