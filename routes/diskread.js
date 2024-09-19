@@ -16,7 +16,7 @@ await blk.getBlockInfo({}, function(err,json) {
 var diskarray=[];
    for(var i=0;i<json.length;i++)
 {
-if(json[i].SIZE>1073741824&& json[i].PARTITIONS.length === 0)
+if(json[i].SIZE>10737418240&& json[i].PARTITIONS.length === 0)
 diskarray.push(json[i]);
 if(json[i].TYPE==='disk')
 {
