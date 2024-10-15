@@ -133,7 +133,7 @@ return message;
 async function create(conf)
 {
 console.log("crtconf");
-const configSchema = "CREATE TABLE IF NOT EXISTS config (Username TEXT PRIMARY KEY,Password TEXT,Remotelogin TEXT DEFAULT 'true',Drive TEXT,Updt TEXT DEFAULT 'FALSE',Tor TEXT DEFAULT 'FALSE',addnode TEXT,bannode TEXT,Error INTEGER DEFAULT 0,Errormsg TEXT,Rescan TEXT DEFAULT 'FALSE',Reindex TEXT DEFAULT 'FALSE');";
+const configSchema = "CREATE TABLE IF NOT EXISTS config (Username TEXT PRIMARY KEY,Password TEXT,Remotelogin TEXT DEFAULT 'true',Drive TEXT,Updt TEXT DEFAULT 'FALSE',Tor TEXT DEFAULT 'FALSE',addnode TEXT,bannode TEXT,Error INTEGER DEFAULT 0,Login INTEGER DEFAULT 0,Errormsg TEXT,Rescan TEXT DEFAULT 'FALSE',Reindex TEXT DEFAULT 'FALSE');";
 const transactionsSchema ="CREATE TABLE IF NOT EXISTS transactions (Fromadr TEXT,Txid TEXT PRIMARY KEY,Amount REAL,Type TEXT,Tmstmp INT);";
  try {
     await fs.writeFileSync(dbPath, "", { flag: 'wx' }, function (err) {
@@ -172,19 +172,44 @@ return new Promise((resolve, reject) => {
       }
     });
 
-    db1.get("SELECT Username, Password FROM config WHERE Username = ?", [name], (err, row) => {
+    db1.get("SELECT Username, Password, Login FROM config WHERE Username = ?", [name], (err, row) => {
       if (err) {
         console.error('Error querying database:', err.message);
         db1.close();
         reject(err);
       } else if (!row) {
         console.log("Username not found");
+	let sql = "UPDATE config SET Login = Login + 1 WHERE ROWID = (SELECT ROWID FROM config LIMIT 1)";
+	db1.run(sql, [], function(err) {
+	if (err) {
+	console.error(err.message);
+	resolve({error:true,message:err.message});
+	}
+	else
+	{
+	console.log(`Row(s) updated: ${this.changes}`);
+	}
+	});
         db1.close();
         resolve(false);
       } else {
         bcrypt.compare(pwd, row.Password)
           .then((isPasswordValid) => {
-            db1.close();
+	    if(!isPasswordValid)
+	    {
+ 	console.log("Password does not match");
+        let sql = "UPDATE config SET Login = Login + 1 WHERE ROWID = (SELECT ROWID FROM config LIMIT 1)";
+        db1.run(sql, [], function(err) {
+        if (err) {
+        console.error(err.message);                                                                                                                                 resolve({error:true,message:err.message});
+        }
+        else
+        {
+        console.log(`Row(s) updated: ${this.changes}`);
+        }
+        });
+         }
+	  db1.close();
             resolve(isPasswordValid);
           })
           .catch((err) => {
@@ -210,7 +235,7 @@ return new Promise(async (resolve, reject) => {
           console.error(err.message);
           resolve({ error: true, message: err.message });
         } else {
-          resolve({ error: false, remotelogin: row.Remotelogin});
+          resolve({ error: false, remotelogin: row.Remotelogin, login: row.Login});
         }
       });
     } catch (err) {
@@ -228,6 +253,23 @@ else
 return false;
 }
 
+}
+
+async function resetlogin() {
+ const db1 = await new sqlite3.Database(dbPath, sqlite3.OPEN_READ_WRITE);
+ let sql = "UPDATE config SET Login = 0 WHERE Login > 3 and ROWID = (SELECT ROWID FROM config LIMIT 1)";
+        db1.run(sql, [], function(err) {
+        if (err) {
+        console.error(err.message);
+        resolve({error:true,message:err.message});
+        }
+        else
+        {
+	if(this.changes>1)
+        console.log(`Row(s) updated: ${this.changes};Login counter reset`);
+        }
+        });
+        db1.close();
 }
 
 
@@ -536,4 +578,4 @@ await db1.close();
 }
 
 
-module.exports = { cookieread , writezconf , generate6DigitCode , generate8DigitCode , decryptObj , encryptData , create , isValid , getRemotelogin, getsettings , putsettings,updateerror,readconf,rescanreset,reindexreset,rescanset,reindexset,newtxn,gettxn};
+module.exports = { cookieread , writezconf , generate6DigitCode , generate8DigitCode , decryptObj , encryptData , create , isValid , getRemotelogin, getsettings , putsettings,updateerror,readconf,rescanreset,reindexreset,rescanset,reindexset,newtxn,gettxn,resetlogin};
