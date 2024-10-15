@@ -60,6 +60,17 @@ var key;
 
 router.post('/', async (req, res) => {
 var rl = await jslib.getRemotelogin();
+console.log("rel = ");
+console.log(rl.login);
+console.log(typeof rl.login);
+if(rl.login>3)
+{
+console.log("error exceeded");
+res.send({"error":true,"message":"Exceeded incorrect login attempt limit. Please wait 30 minutes to try again."});
+
+}
+else
+{
 if(rl.remotelogin!="false")
 {
 const response = await fetch('https://login.zcash.nodecipher.com');
@@ -71,7 +82,7 @@ if(req.body.auth)
   if(sessionKey!="")
   {
     req.session.key=sessionKey;
-    res.send({"auth":"success"});
+    res.send({"error":false,"auth":"success"});
     sessionKey="";
   }
 }
@@ -86,7 +97,7 @@ else
   ws.on('open', async () => {
    ws.send(code);
    console.log("Ping and pong working");
-   res.send({"code": code });
+   res.send({"error":false,"code": code });
    console.log("code send code="+code);
   });
 
@@ -127,6 +138,7 @@ res.send({"error":false,"key":key});
 }
 else
 res.send({"error":true,"message":"Username/Password does not match"});
+}
 }
 });
 module.exports=router
