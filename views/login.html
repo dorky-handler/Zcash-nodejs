@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -88,6 +89,7 @@ fetch('/login', { method: 'POST', headers: {"Content-Type": "application/json"},
         fetch('/login', { method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify({"auth": true}) })
   .then(response => response.json())
   .then(data => {
+console.log("Data from websocket - ");
     if(data.auth)
     {
       console.log("recvd auth");
@@ -107,11 +109,17 @@ fetch('/login', { method: 'POST', headers: {"Content-Type": "application/json"},
        
       });
 
-      const popup = window.open(`https://login.zcash.nodecipher.com/?code=${data.code}&origin=${location.href}`, '_blank');
-
-if (popup === null) {
+      if(data.error)
+{
+	alert(data.message);
+}
+	else
+{
+     const popup = window.open(`https://login.zcash.nodecipher.com/?code=${data.code}&origin=${location.href}`, '_blank');
+	if (popup === null) {
     handlePopupBlocked();
   }
+}
 
 
 
