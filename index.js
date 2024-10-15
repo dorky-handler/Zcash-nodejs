@@ -245,7 +245,7 @@ setInterval(async () => {
 
 await jslib.resetlogin();
 
-} , 5*60*1000);
+} , 30*60*1000);
 
 app.use("/",homeroute)
 app.use("/login",loginroute)
