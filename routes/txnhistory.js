@@ -35,14 +35,14 @@ if(ballist.error==null)
 var resultrow = [];
 for(var i=0;i<ballist.result.length;i++)
 {
-resultrow.push({"txid":ballist.result[i].txid,"amt":ballist.result[i].amount,"type":"Receive","tmstmp":ballist.result[i].blocktime});
+resultrow.push({"txid":ballist.result[i].txid,"amt":ballist.result[i].amount,"type":"Receive","tmstmp":ballist.result[i].blocktime,"memo":ballist.result[i].memoStr?ballist.result[i].memoStr:""});
 }
 console.log("Receive only row ");
 console.log(JSON.stringify(resultrow));
 var rows = await jslib.gettxn(decrypted.from);
 for(var i=0;i<rows.length;i++)
 {
-resultrow.push({"txid":rows[i].Txid,"amt":rows[i].Amount,"type":rows[i].Type,"tmstmp":rows[i].Tmstmp});
+resultrow.push({"txid":rows[i].Txid,"amt":rows[i].Amount,"type":rows[i].Type,"tmstmp":rows[i].Tmstmp,"memo":rows[i].Memo,"to":rows[i].Toadr});
 }
 console.log("Receive with send row ");
 console.log(JSON.stringify(resultrow));
