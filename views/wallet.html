@@ -63,7 +63,7 @@
     </div>
   </nav>
   <div class="row head-box d-flex">
-    <div class="bg-blue "><i class="fa-solid fa-wallet"></i>
+    <div class="bg-blue text-white"><i class="fa-solid fa-wallet"></i>
      
     </div>
     <div class="col col-md-auto ">
@@ -161,8 +161,16 @@
 			<label class="form-check-label" for="flexSwitchCheckDefault"></label>
 		  </div> 
                   </div>
+                  </div>
+		  </div>
+		  <div class="list-group-item px-4 pt-4">
+                        <div class="row align-items-center input-box px-4">
+                          <div class="input-field px-4">
+                            <input type="text" class="input" id="memo" required="" autocomplete="off">
+                            <label for="memo">Memo</label>
+                        </div>
+                        </div>
                     </div>
-                </div>
               
                 </div>
                 <div class="row m-4">
@@ -249,14 +257,16 @@
         <div class="col-6 " id="blkhei">23437372</div>
         <div class="col-6 fs-5">Confirmations : </div>
         <div class="col-6 " id="blkcnf">270</div>
-        <div class="col-6 fs-5">Transaction Type : </div>
-        <div class="col-6 " id="blktyp">Shield</div>
+        <div class="col-6 fs-5" id="ttypediv">Transaction Type : </div>
+        <div class="col-6 " id="blktyp" style="overflow-wrap: anywhere">Shield</div>
         <div class="col-6 fs-5">Transaction Status</div>
         <div class="col-6 " id="blksta">Mined</div>
         <div class="col-6 fs-5">Amount : </div>
         <div class="col-6 " id="blkamt"> 0.001 Zec</div>
         <div class="col-6 fs-5">Time : </div>
         <div class="col-6 " id="blktim">24/07/2024 13:55Am</div>
+	<div class="col-6 fs-5">Memo : </div>
+        <div class="col-6 " id="memodiv"></div>
 	</div>
 
 </div>
@@ -376,7 +386,7 @@
 <script>
 
 
-async function showtxn(txid,type,amt)
+async function showtxn(txid,type,amt,memo)
 {
 var encrypt = await encryptObj({txid:txid});
  $.ajax({
@@ -399,6 +409,9 @@ var encrypt = await encryptObj({txid:txid});
 		$("#blktxn").html(txid);
 		$("#blksta").html(result.message.status);
 		$("#blkamt").html(amt);
+		if(type!="Receive")
+		$("#ttypediv").html("Sent to :");
+		$("#memodiv").html(memo);
 		$("#blktyp").html(type);
 		$("#txnlink").html("<a style=\"color: #5e00b5;\" href=\"https://mainnet.zcashexplorer.app/transactions/"+ txid +"\" target=\"_blank\"> <i class=\"fa-solid fa-link fa-xl\"></i></a>")
 		$("#blktim").html(new Date(result.message.timestamp*1000).toLocaleString());
@@ -446,7 +459,7 @@ async function chktxn(op,sendtype,amount)
 {
 console.log("Chktxn op - ");
 console.log((op));
-var encrypt = await encryptObj({opid:op,type:sendtype,amt:amount,fromadr:$("#walletlist").find(":selected").val()});
+var encrypt = await encryptObj({opid:op,type:sendtype,amt:amount,fromadr:$("#walletlist").find(":selected").val(),memo:$("#memo").val(),"toadr":$("#toaddr").val()});
  $.ajax({
      contentType: 'application/json',
         type: "POST",
@@ -873,7 +886,9 @@ $.ajax({
 
 		  {
 			
-			var txdivstart="<div onclick='showtxn(\""+result[i].txid+"\",\""+result[i].type+"\",\""+result[i].amt;
+			var memo = result[i].memo?result[i].memo:"";
+			var txtype = result[i].type == "Receive" ? result[i].type : result[i].to; 
+			var txdivstart="<div onclick='showtxn(\""+result[i].txid+"\",\""+txtype+"\",\""+result[i].amt+"\",\""+memo;
 			if(result[i].type==="Receive")
 			txdivstart+=txdivstartrec
 			if(result[i].type==="Send")
@@ -985,11 +1000,14 @@ else
 {
 var txnfees = null;
 var txntype = "AllowRevealedAmounts";
+var memoval = "";
 if($("#toaddr").val()[0]=="t")
 txntype="AllowRevealedRecipients";
+else
+memoval=$("#memo").val()
 if($("#txnchk").is(':checked'))
 txnfees = parseFloat($("#txnfees").val());
-var encrypt = await encryptObj({ua: $("#walletlist").find(":selected").val(),to: $("#toaddr").val(),amt: parseFloat($("#amt").val()),fees: txnfees,type: txntype});
+var encrypt = await encryptObj({ua: $("#walletlist").find(":selected").val(),to: $("#toaddr").val(),amt: parseFloat($("#amt").val()),fees: txnfees,type: txntype,memo:memoval});
  $.ajax({
      contentType: 'application/json',
 type: "POST",
