@@ -25,7 +25,14 @@ else
 {
 var decobj = JSON.parse(resp.decrypted);
 var meth="z_sendmany";
+if(decobj.to[0]=='t')
 var params =[decobj.ua,[{"address":decobj.to,"amount":decobj.amt}],1,decobj.fees,decobj.type];
+else
+{
+const buf = Buffer.from(decobj.memo, 'utf8');
+var memo = (buf.toString('hex'));
+var params =[decobj.ua,[{"address":decobj.to,"amount":decobj.amt,"memo":memo}],1,decobj.fees,decobj.type];
+}
 var data = {"method":meth , "params":params};
 var result = await fetch.rpc(data);
 console.log("Send funds output - ");
