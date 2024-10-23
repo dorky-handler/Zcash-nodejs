@@ -1,50 +1,513 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Error</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-</head>
-<body>
-<div class="main-container">
+<html>
+    <head>
+        <title>Zcash node dashboard</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" integrity="sha512-ZwR1/gSZM3ai6vCdI+LVF1zSq/5HznD3ZSTk7kajkaj4D292NLuduDCO1c/NT8Id+jE58KYLKT7hXnbtryGmMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+      </head>
+    <body >
+        <div class="main-container d-flex">
 <div class="spinner-wrapper">
 <div class="spinner-border" role="status">
 </div>
 <h2 class="mb-0">Loading...</h2>
 </div>
-<div>
-  <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+<div class="sidebar" id="side_nav">
+<div class="header-box px-2 pt-3 pb-4 d-flex justify-content-between">
+  <h1 class="fs-4"><span class="bg-white text-darkblue rounded shadow px-2 me-2">Z</span><span class="text-white">Zcash Node</span></h1>
+<button class="btn d-md-none d-block close-btn px-1 py-0 text-white"><i class="fa-solid fa-bars"></i></button>
+</div>
+<ul class="list-unstyled px-2 lsb">
+  <li class="active slowcolor"><a href="#" class="text-decoration-none px-3 py-2 d-block"><i class="fa-sharp fa-solid fa-house fa-fw"></i>Dashboard</a></li>
+  <li class="slowcolor"><a href="/settings" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-gear fa-fw"></i>Settings</a></li>
+  <li class="slowcolor"><a href="/wallet" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-wallet fa-fw"></i>Wallet</a></li>
+  <li class="slowcolor"><a href="#" onclick="openssh()" class="text-decoration-none px-3 py-2 d-block"><i class="fa-solid fa-network-wired fa-fw"></i>Web-SSH</a></li>
+</ul>
+<!-- made by animal spirits -->
+</div>
+<div class="content">
 
-    <div class="card text-center">
-      <div class="card-header">
-        <h1 class="card-title">Error!</h1>
+<div class="modal fade" id="updatemodal" tabindex="-1" role="dialog" aria-labelledby="updatemodaltitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Alert , New update !</h5>
       </div>
-      <div class="card-body">
-        <h3 class="card-text">Your node encountered an error. Try rebooting to fix it, if error persists contact support with the log.</h3>
-        <pre class="code-block">
+      <div class="modal-body">
+       <h3 id="updatetext"> Update text </h3>
 
-</pre>
       </div>
-      <div class="card-footer">
-	<button class="btn btn-primary" id="update-btn">Update</button>
-        <button class="btn btn-primary" id="reboot-btn">Reboot</button>
-        <button class="btn btn-danger" id="contact-support-btn">Contact Support</button>
-	<button class="btn btn-primary" id="settings-btn">Settings</button>
-	<button class="btn btn-danger px-35" id="rescan-btn">Rescan Blockchain</button>
-	<button class="btn btn-danger px-35" id="reindex-btn">Re-index Blockchain</button>
+      <div class="modal-footer">
+        <button id="updateconfirmmodal" type="button" class="btn btn-danger">Confirm</button>
+        <button id="updateclosemodal" type="button" class="btn btn-primary">Close</button>
       </div>
     </div>
+  </div>
+</div>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow sticky-top" id="topname">
+    <div class="container-fluid">
+      <h2 class="d-none mx-3 d-md-flex txtcol fw-bold">Dashboard</h2>
+      <div class="d-flex justify-content-between d-md-none d-block">
+      <a class="navbar-brand fs-4" href="#">Zcash Node</a>
+      <button class="btn px-1 py-0 open-btn"><i class="fa-solid fa-bars"></i></button>
+    </div>
+	 <ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+      
+	<button class="nav-link btn txtcol" aria-current="page" id="logout" href="#"> <i class="fa-solid fa-right-from-bracket"> </i> logout</button>
+	
+	</li></ul>	
+      <!--
+	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav  mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">logout</a>
+          </li>
+        </ul>
+      </div>
+	-->
+    </div>
+  </nav>
+  
+
+<div class="row head-box d-flex d-md-none">
+    <div class="bg-blue text-white"><i class="fa-sharp fa-solid fa-house fa-fw"></i>
+     
+    </div>
+    <div class="col col-md-auto ">
+    <h2>Dashboard</h2>
+  </div>
+  <hr class="my-3">
+  </div>
+
+  
+  <div class="container">
+    <div id="console" class="row col justify-content-around">
+
+	<div id="runbanner" class="d-none mx-2 my-3 hf h2 col-9 col-md-4 col-lg-3 col-sm-13 bg-white py-3 rounded dashed shadow txtcol fw-bold fnt">
+        <h4 class="mb-3">Status  :  </h4>Running
+	<div class="progress my-3">
+	<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+	</div>
+	<div class="d-flex justify-content-between">
+	<div class="h6 pt-2 fnt fw-bold">Sync complete</div><i class="fa-solid fa-square-check"></i>
+    	</div>
+	</div>
+
+    <div id="syncbanner" class="mx-2 my-3 d-none hf h2 col-9 col-md-4 col-lg-3 col-sm-13 bg-white py-3 rounded shadow txtcol fw-bold fnt dashed">
+	<h4 class="mb-3">Status  :  </h4> Syncing
+      <div class="progress my-3">
+       <div id="mainprogress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+   </div>
+   <div class="d-flex justify-content-between">
+   <div id="progind" class="h6 pt-2 fnt fw-bold">Loading</div><i class="fa-solid fa-rotate"></i>
+   </div>
+	</div>
+
+     <div id="errorbanner" class="d-none mx-2 my-3 h2 hf col-9 col-md-4 col-lg-3 col-sm-13 bg-white py-3 rounded shadow dashed txtcol fw-bold fnt">
+     <h4 class="mb-3">Status : </h4> Not Running
+	<div class="progress my-3">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" s>        </div>
+	</div>
+     <div class="d-flex justify-content-between">
+	<div class="h6 pt-2 fnt fw-bold">Zcashd Error</div><i class="fa-solid fa-square-xmark"></i> 
+     </div>
+     </div>
+     <div id="loadbanner" class="d-none h2 mx-2 my-3 col-9 hf col-md-4 col-lg-3 col-sm-13 bg-white py-3 rounded dashed shadow txtcol fw-bold fnt ">
+      <h4 class="mb-3"> Status : </h4> Loading...
+  	<div class="progress my-3">
+  	<div class="bg-transparent animate" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+  	<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 10%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+  	</div>
+	<div class="d-flex justify-content-between">
+	<div class="h6 pt-2 fnt fw-bold">Scanning blocks</div>	<i class="fa-solid fa-triangle-exclamation"></i>
+	</div>
+      </div>
+
+
+      <div id="nodeinfobanner1" class="d-none h2 mx-2 my-3 col-9 col-md-4 hf col-lg-3 col-sm-13 bg-white py-3 rounded dashed shadow txtcol fw-bold fnt ">
+      <h4 class="mb-3"> Height : </h4> <div id="nodeheight">24,350,670 </div>
+	<hr class="my-3 dashed border-5 opacity-100">
+	<div class="d-flex my-2 justify-content-between">
+        <div class="h6 pt-2 fnt fw-bold" id="connectednode">Connected nodes - 8</div>
+        </div>
+      </div>
+
+
+	<div id="nodeinfobanner2" class="h2 mx-2 d-none my-3 col-9 col-md-4 hf col-lg-3 col-sm-13 bg-white py-3 rounded dashed shadow txtcol fw-bold fnt ">
+        <h4 class="mb-3"> Difficulty : </h4> <div id="nodediff" class="h5">50.76 M </div>
+	<hr class="my-3 dashed border-5 opacity-100"> 
+	<div class="d-flex my-2 justify-content-between">
+        <div class="h6 pt-2 fnt" id="clientinfo">Client - Magicsir6.0.0.0</div>
+        </div>
+      </div>
+
+
+	<div id="sessionbanner" class="mx-2 my-3 h2 hf d-none col-9 col-md-4 col-lg-3 col-sm-13 bg-white py-3 rounded shadow txtcol fw-bold fnt dashed">
+        <h4 class="mb-3">Session  :  </h4> <div class="h5" id="sessionstats">18.04 mb(up) / 100.02 mb(down)</div>
+	<hr class="my-3 dashed border-5 opacity-100">
+	<div class="d-flex justify-content-between">
+	<div id="uptime" class="h6 pt-2 fnt fw-bold">Uptime - 356 Days</div>
+	</div>                                                                                                                                      
+	</div>
+
+
+     
+
+	<div id="memorybanner" class="h2 mx-2 my-3 col-9 hf d-none col-md-4 col-lg-3 col-sm-13 bg-white py-3 rounded dashed shadow txtcol fw-bold fnt ">
+      <h5 class="mb-3"> Free/Total Memory : </h5> <div id="memval" class="h4">2.5 Gb/7.9 Gb </div>
+        <hr class="my-3 dashed border-5 opacity-100">
+        <div class="d-flex my-2 justify-content-between">
+        <div class="h6 pt-2 fnt fw-bold" id="memperc">Used memory - 20%</div>
+        </div>
+      </div>
+
+
+
+	<div id="storagebanner" class="h2 mx-2 my-3 col-9 hf d-none col-md-4 col-lg-3 col-sm-13 bg-white py-3 rounded dashed shadow txtcol fw-bold fnt ">
+       <h4 class="mb-3"> Storage : </h4> <div class="h5" id="stoval"> 220Gb / 1 Tb </div>
+	<div class="progress my-3">
+        <div id="stoprogress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 60%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">65%</div>
+	</div>
+        <div class="d-flex my-2 justify-content-between">
+        <div class="h6 pt-2 fnt fw-bold" id="stoperc">Used storage - 99% </div>
+        </div>
+      </div>
+
+
+
+<div class="d-flex col-xl-8 row p-3">
+<div class="txtcol p-3 bg-white dashed shadow rounded d-none" id="chartbanner">
+<h2>Value Pools</h2>
+<div class="row d-flex mt-3 justify-content-around txtcol">
+<div class="col-md-5">
+ <div style="width:300px;height:300px;">
+              <canvas id="doughnut"></canvas>
+              </div>
+
+</div>
+<div class="col-md-5">
+<ul id="listul" class="mt-3 dashed list-group txtcol"></ul>
 </div>
 </div>
 </div>
-<style>
-body{
-background-color: #f3e7ff;
+</div>
+</div>
+
+
+</div>
+</div>
+
+</div>
+<!-- <script src="js/dash.js"></script> -->
+<script>
+ function openssh() {
+  var newUrl ="https://"+window.location.host+":4200"; // Replace existing port
+  window.open(newUrl, "_blank"); // Open in new tab
+}
+	
+  $(".sidebar ul li").on('click' , function(){
+    $(".sidebar ul li.active").removeClass('active');
+    $(this).addClass('active');
+
+  })
+$('.open-btn').on('click', function(){
+  $('.sidebar').addClass('active');
+});
+
+$('.close-btn').on('click', function(){
+  $('.sidebar').removeClass('active');
+})
+
+$(document).on("click", function (event) {
+if ($(event.target).closest("#side_nav").length === 0 && $(event.target).closest(".open-btn").length !=1)
+     $('.sidebar').removeClass('active');
+  
+});
+
+//! Chart JS
+
+function chartBuild(pooldata)
+{
+$("#chartbanner").removeClass("d-none");
+var pdata = pooldata.data;
+var labels = pooldata.labels;
+const chartData = {
+  labels: labels,
+  data: pdata,
+};
+
+var colors = ["#8a2be2","#7231ad","#986AF1","#3ED8D6","#4887F9"];
+
+const chart = document.getElementById("doughnut");
+
+const thickness = {
+  id:'thickness',
+  
+  beforeDatasetsDraw(c,a,p)
+  {
+    const {ctx,data} =c;
+   var xcpr = c.getDatasetMeta(0).data[0].x;
+    var ycpr = c.getDatasetMeta(0).data[0].y;
+    ctx.textAlign = 'center';
+    ctx.textBaseAlign = 'middle';
+    ctx.font = "1em sans-serif";
+    ctx.fillStyle = "#aa44ee";
+    ctx.fillText("Total pool size : ",xcpr,ycpr); 
+    var poolsum = pdata.reduce((partialSum, a) => partialSum + a, 0).toLocaleString(undefined,{'minimumFractionDigits':2,'maximumFractionDigits':2});
+    ctx.fillText( poolsum + " Zec",xcpr,ycpr+20);
+  },
+  beforeDraw(c,p){
+    
+ var datalen = c.getDatasetMeta(0).data.length; 
+ 
+ for(i=0;i<datalen;i++){   
+   c.getDatasetMeta(0).data[i].innerRadius=innerradii+4*((i*.2)+i);
+    //c.getDatasetMeta(0).data[i].innerRadius=innerradii-1*i;
+  }
+  }
 }
 
+
+var vt = new Chart(chart, {
+  type: "doughnut",
+  data: {
+    labels: labels,
+    datasets: [
+      {
+        label: "Pool size",
+        data: pdata,
+        backgroundColor: colors,
+        offset: 10,
+        borderColor:["#00000000"],
+        hoverOffset: 8,
+        hoverBorderColor: "#9a999b",
+        borderWidth: 1,
+      },
+    ],
+  },
+  plugins:[thickness],
+  options: {
+    cutout: 90,
+     responsive: true,
+    plugins: {
+      colors: {
+      enabled: true
+    },
+      legend: {
+        display: false,
+        labels: {
+          color: "#8b8a96",
+          font: {
+            size: 120,
+            weight: 600,
+          },
+        },
+      },
+    },
+    layout: {
+      padding: {
+	left: 10,
+	right: 10,
+        bottom: 30,
+      },
+    },
+  },
+});
+
+
+var innerradii = vt.getDatasetMeta(0).data[1].innerRadius;
+
+var outerradii = vt.getDatasetMeta(0).data[1].outerRadius;
+
+
+function population() {
+    chartData.labels.forEach((label, i) => {
+    let eachEvent = document.createElement("li");
+    eachEvent.classList.add("list-group-item");
+	eachEvent.classList.add("txtcol");
+	eachEvent.classList.add("fw-bold");
+	eachEvent.classList.add("dashed");
+    eachEvent.innerHTML = `<i class="fa-solid fa-circle-half-stroke" style="color:${colors[i]}"></i> ${label}: <span class="percentage">${chartData.data[i].toLocaleString(undefined, {'minimumFractionDigits':2,'maximumFractionDigits':2}) + " Zec"}</span> <br>`;
+ 	$("#listul").append(eachEvent);
+  });
+}
+
+population();
+
+}
+
+var htmlfirstpart = "<div class=\"element col-md-3 my-3 mx-1 bg-white h-50 text-center rounded shadow \"><div class=\"py-3\"><div class=\"col\"><div class=\"txtcol fnt\"><h5>";
+var htmlscndpart="</h5></div><hr class=\"my-2 text-primary\"></div><div class=\"sz-7 fw-bold\">";
+var htmlthirdpart="</div></div></div>";
+$(document).ready(function(){
+jQuery.ajaxSetup({
+  beforeSend: function() {
+     $('.spinner-wrapper').show();
+  },
+  complete: function(){
+     $('.spinner-wrapper').hide();
+  },
+  success: function() {}
+});
+
+$("#logout").on("click" , function(e) {
+sessionStorage.clear();
+location.replace(location.origin+"/login");
+});
+
+
+if(!sessionStorage.getItem("key"))
+location.replace(location.origin+"/login");
+
+
+$("#updateclosemodal").on("click" , function(e) {
+$("#updatemodal").modal("hide");
+});
+
+
+$("#updateconfirmmodal").on("click" , function(e) {
+ fetch(location.origin+'/update', {
+    method: 'GET',
+  })
+    .then(response => response.json())
+    .then(data => alert(data.message))
+    .catch(error => alert('Error posting to server'));
+
+});
+
+
+
+$.get(location.protocol+"//"+location.host+'/dashboard', {category:'client', type:'premium'}, function(response){
+if(!response.error)
+{
+if(response.dco)
+{
+$("#runbanner").removeClass("d-none");
+}
+else
+{
+$("#syncbanner").removeClass("d-none");
+var newwid = (response.height/response.trueheight)*100;
+$("#mainprogress").css("width",newwid+"%");
+$("#mainprogress").html(Math.round(newwid * 100) / 100 + "%");
+$("#progind").html(response.height+"/"+response.trueheight);
+}
+$("#nodeheight").html(response.trueheight.toLocaleString());
+$("#nodeinfobanner1").removeClass("d-none");
+$("#nodediff").html(Math.round(response.diff*1)/1000 + "M");
+$("#nodeinfobanner2").removeClass("d-none");
+$("#clientinfo").html("Client - "+response.client.slice(1, -1));
+$("#connectednode").html("Connected nodes - "+response.connections);
+diskSize(response.sizeondisk);
+$("#uptime").html(response.uptime);
+$("#memval").html(Math.round((10*response.freemem)/(1024*1024*1024))/10+"Gb" +" / "+Math.round((10*response.totalmem)/(1024*1024*1024))/10 + "Gb");
+$("#memperc").html("Used memory -" + (((Math.round((10*response.freemem)/(1024*1024*1024))/10)/(Math.round((10*response.totalmem)/(1024*1024*1024))/10))*100).toFixed(2) +" %");
+$("#memorybanner").removeClass("d-none");
+var totalsize=0;
+var pdata = ({"labels":[],"data":[]});
+
+for(var i=0;i<response.valuepools.length;i++)
+{
+pdata.labels.push(response.valuepools[i].id);
+pdata.data.push(response.valuepools[i].chainValue);
+}
+chartBuild(pdata);
+if(response.upload>1&&response.download)
+$("#sessionstats").html(formatBytes(response.upload) +" (up) / "+ formatBytes(response.download) +" (down)");
+else
+$("#sessionstats").html((response.upload).toFixed(2) +" Bytes (up) / "+ (response.download).toFixed(2) +" Bytes (down)");
+$("#sessionbanner").removeClass("d-none");
+if(response.updateavailable=="true")
+{
+$("#updatetext").html("New version of Zcashd , version "+response.updatename+"available.It is recommended to download the latest version of zcashd.");
+$("#updatemodal").modal("show");
+}
+
+}
+else
+{
+if(response.message=="login")
+window.location.replace(window.location.protocol + "//" +location.host + "/login");
+if(response.message=="Loading block index..."||response.message=="Verifying blocks..."||response.message=="Rescanning..."||response.message=="Rewinding blocks if needed...")
+$("#loadbanner").removeClass("d-none");
+else
+$("#errorbanner").removeClass("d-none");
+}
+});
+
+
+});
+
+function formatBytes(a,b=2){if(!+a)return"0 Bytes";const c=0>b?0:b,d=Math.floor(Math.log(a)/Math.log(1024));return`${parseFloat((a/Math.pow(1024,d)).toFixed(c))} ${["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"][d]}`};
+
+
+function diskSize(siz)
+{
+$.get("http://nodecipher.local/settread", function(response) {
+        // Extract the desired object from the response
+         if(response.error)
+             alert("Error - Can't fetch node settings , "+response.message);
+         else {
+         console.log(response);
+        var drive = response.message.drv;
+        
+        // Construct the URL for the second GET request using the extracted object
+        const secondUrl = 'http://nodecipher.local/diskread';
+
+        // Second GET request
+        $.get(secondUrl, function(secondResponse) {
+            // Process the data from the second response
+		var totstor;
+            	secondResponse.forEach((element) => element.NAME == drive ? totstor = element.SIZE : "" );
+		$("#stoval").html(siz.toFixed(2)+" Gb / "+ formatBytes(totstor));
+		totstor = totstor / (1024 * 1024 * 1024);
+		var storperc = ((siz / (totstor))*100).toFixed(2);
+		console.log(storperc);
+		$("#storagebanner").removeClass("d-none");
+		$("#stoprogress").css("width",storperc+"%");
+		$("#stoprogress").html(storperc + "%");
+		$("#stoperc").html("Used storage - "+storperc + "%");
+        });
+    }
+    });
+}
+
+</script>
+
+
+<style>
+
+:root {
+scrollbar-color: #5e00b5 transparent;
+scrollbar-width: thin;
+}
+
+
+  body
+{
+    background-color: #d7e5e8;
+
+}
+#side_nav
+{
+    background-color: #8a2be2;
+    min-width: 250px;
+    max-width: 250px;
+}
+
+.element
+{
+    border-right: solid #9a00bd 0.6vw;
+    border-left: solid #9a00bd 0.6vw;
+}
 
 .spinner-wrapper {
 background-color:#f3e7ff;
@@ -66,172 +529,228 @@ width:3em;
 color:#8a2be2;
 }
 
-
-
-#update-btn
+.hf
 {
-display:none;
+height : fit-content;
 }
 
-.btn-primary {
-    background-color: #8a2be2;
-}
-.card-header
+
+.content
 {
-background: #9a00bd;
-color: white;
+    min-height: 100vh;
+    width: 100%;
+    background-color: #f3e7ff;
 }
 
-h3{
-color:#8a2be2;
-}
-
-.card-footer
+.lsb
 {
-background: #9a00bd;
+  position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 50%;
+    width:210px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
 
+.text-darkblue
+{
+  border-left: .3em solid;
+}
+
+hr.h-color
+{
+    background-color: #fff;
+    height: 2px;
+}
+.sidebar li.active
+{
+    background: #0f1f2b;
+    border-radius: 8px;
+}
+.head-box
+{
+    margin: 30px 35px 15px 30px !important;
+}
+
+.sidebar li.active a:hover, .sidebar li.slowcolor:hover
+{
+    color: #dfe9eb55;
+    background: #a9cccfac;
+    border-radius: 6px;
+    transition:linear .5s;
+}
+#noticon
+{
+    background:#fb6279b3;
+}
+
+.animate
+{
+  width:0%;
+  animation: expand 3s infinite linear(0 0%, 0 2.27%, 0.02 4.53%, 0.04 6.8%, 0.06 9.07%, 0.1 11.33%, 0.14 13.6%, 0.25 18.15%, 0.39 22.7%, 0.56 27.25%, 0.77 31.8%, 1 36.35%, 0.89 40.9%, 0.85 43.18%, 0.81 45.45%, 0.79 47.72%, 0.77 50%, 0.75 52.27%, 0.75 54.55%, 0.75 56.82%, 0.77 59.1%, 0.79 61.38%, 0.81 63.65%, 0.85 65.93%, 0.89 68.2%, 1 72.7%, 0.97 74.98%, 0.95 77.25%, 0.94 79.53%, 0.94 81.8%, 0.94 84.08%, 0.95 86.35%, 0.97 88.63%, 1 90.9%, 0.99 93.18%, 0.98 95.45%, 0.99 97.73%, 1 100%);
+}
+
+@keyframes expand {
+  0% {width: 0;}
+  50% {width: 100%;}
+  100% {width: 0;}
+}
+
+
+.sidebar li.active a:hover
+{
+
+color: aliceblue;
+
+}
+.sidebar li a
+{
+    color: #fff;
+}
+
+.dashed
+{
+  border-style: dashed;
+  color:#5e00b5!important;
+  transition : border-style 1.5s ease ,box-shadow 1.5s ease;
+}
+
+.dashed:hover
+{
+	 border-style: solid;
+	  transition : border-style 1.5s ease;
+}
+
+.shadow
+{
+ box-shadow:0 .5rem 1rem #2125294a !important;
+}
+
+
+.shadow:hover
+{
+	box-shadow:none !important;
+	transition : box-shadow 1.5s ease;
+}
+
+.bg-blue
+{
+    background-color: #9a00bd;
+    
+    width: fit-content !important;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.sz-7
+{
+    font-size: 1.75vw !important;
+    color:#9a00bd;
+}
+.btm
+{
+    margin-bottom: 18px!important;
+}
+.txtcol
+{
+    color: #5e00b5!important;
+}
+.movemnt
+{
+    margin-top: 10px;
+    margin-left: 25%!important;
+}
+.fnt
+{
+  font-family: var(--bs-body-font-family);
+}
+.progress-bar
+{
+    background-color: #8a2be2!important;
+}
+.colr-green
+{
+    background-color: rgba(128, 209, 128, 0.801);
+}
+
+/* Chart */
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 8px;
+  padding: 1em;
+}
+
+.chart h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.chart ul {
+  display: block;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  margin: 10px 0;
+}
+
+.chart ul li {
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin:1em;
+  background-color: var(--card-bg-color);
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px;
+  box-shadow: 0px 2px 3px 0px var(--shadow-color),
+    0px 1px 4px 0px var(--shadow-color), 0px 2px 1px -1px var(--shadow-color);
+}
+
+.chart .percentage {
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+
+
+@media(max-width: 767px){
+    #side_nav{
+        margin-left: -250px;
+        position: fixed;
+min-height: 100vh;
+z-index: 1;
+transition: all 1s;
+    }
+
+#sidenav > .lsb
+{
+ margin-left: -250px;
+}
+
+
+#side_nav.active > .lsb {
+        margin-left: 0;
+    }
+
+.sz-7
+{
+font-size: 5vw !important;
+}
+
+    #side_nav.active{
+        margin-left: 0;
+    }
 }
 </style>
-  <script>
-const logElement = document.querySelector('.code-block');
-const url = location.origin+'/error'; 
-const updateurl = location.origin+'/update';
 
-     $('.spinner-wrapper').show();
-
-fetch(url)
-  .then(response => response.json()) 
-  .then(data => {
-$('.spinner-wrapper').hide();
-if(data.updateavailable==="true")
-{
-$("#update-btn").css("display", "inline-block");
-$(".card-text").html("Your node encountered an error. Try rebooting to fix it, if error persists contact support with the log.");
-logElement.textContent = "New Zcashd update \""+data.updatename+"\" available. Click the update button to update to the latest version.";
-}
-else
-{
-logElement.textContent = data.errormessage;
-}
-}).catch(error => {logElement.textContent = JSON.stringify(error);console.log(error);});
-
-
-
-	  function encryptObj(dataToEncrypt)
-{
-var passphrase = sessionStorage.getItem("key");
-var salt = CryptoJS.lib.WordArray.random(16); 
-    var iterations = 10000;
-    var keySize = 256; 
-    var key = CryptoJS.PBKDF2(passphrase, salt, { keySize: keySize / 32, iterations: iterations });
-    var iv = CryptoJS.lib.WordArray.random(16);
-    var encryptedData = CryptoJS.AES.encrypt(
-      JSON.stringify(dataToEncrypt),
-      key,
-      { iv: iv, mode: CryptoJS.mode.CBC }
-    ).toString();
-return {"encryptedData":encryptedData , "iv": iv.toString(), "salt": salt.toString()};
-}
-
-async function decryptData(encryptedData, iv, salt, passphrase) {
-      const key = CryptoJS.PBKDF2(passphrase, CryptoJS.enc.Hex.parse(salt), { keySize: 256 / 32, iterations: 10000 });
-      const ivWordArray = CryptoJS.enc.Hex.parse(iv);
-      const decryptedData = CryptoJS.AES.decrypt(encryptedData, key, { iv: ivWordArray  ,mode: CryptoJS.mode.CBC}).toString(CryptoJS.enc.Utf8);
-return decryptedData
-  }
-
-
-const rebootBtn = document.getElementById('reboot-btn');
-const settingsBtn = document.getElementById('settings-btn');
-const updateBtn = document.getElementById('update-btn');
-const contactSupportBtn = document.getElementById('contact-support-btn');
-
-
-
-$("#rescan-btn").on("click" , async function(e) {
-var dataToEncrypt = {"type":"rescan"};
-var encrData = await encryptObj(dataToEncrypt);
- $.ajax({
-     contentType: 'application/json',
-type: "POST",
-        url: location.protocol+"//"+location.host+"/rescan",
-        data: JSON.stringify(encrData),
-        datatype: 'json',
-        success: async function(result) {
-        if(result.error)
-alert("Error - "+result.message);
-else
-{
-        var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
-        alert(decryptedData);
-}
-                },
-        error: function(result) {
-            alert('Error - ' + result);
-        }
-    });
-});
-
-$("#reindex-btn").on("click" , async function(e) {
-var dataToEncrypt = {"type":"reindex"};
-var encrData = await encryptObj(dataToEncrypt);
- $.ajax({
-     contentType: 'application/json',
-type: "POST",
-        url: location.protocol+"//"+location.host+"/reindex",
-        data: JSON.stringify(encrData),
-        datatype: 'json',
-        success: async function(result) {
-        if(result.error)
-alert("Error - "+result.message);
-else
-{
-        var decryptedData = await decryptData(result.message.encryptedData, result.message.iv, result.message.salt, sessionStorage.getItem("key"));
-        alert(decryptedData);
-}
-                },
-        error: function(result) {
-            alert('Error - ' + result);
-        }
-    });
-});
-
-
-rebootBtn.addEventListener('click', () => {
-  fetch(url, {
-    method: 'POST',
-  })
-    .then(response => response.json())
-    .then(data => alert(data.message))
-    .catch(error => alert('Error posting to server'));
-});
-
-settingsBtn.addEventListener('click', () => {
-window.location.replace("/settings");
-});
-	  
-
-updateBtn.addEventListener('click', () => {
-  fetch(updateurl, {
-    method: 'GET',
-  })
-    .then(response => response.json())
-    .then(data => alert(data.message))
-    .catch(error => alert('Error posting to server'));
-});
-
-
-
-contactSupportBtn.addEventListener('click', () => {
-
-const logText = document.querySelector('.code-block').textContent;
-  const subject = "Zcash Node Error: Request for Support";
-  const body = `My Zcash node encountered an error. Help me find a fix. Here's the log:\n\n${logText}`;
-  const emailLink = `mailto:support@nodecipher.com?subject=${subject}&body=${body}`; 
-  window.location.href = emailLink;
-
-});
-
-</script>
 </body>
 </html>
