@@ -43,6 +43,8 @@ console.log("amount - ");
 console.log(txobj.result.amount);
 console.log("timestamp - ");
 console.log(txobj.result.time);
+if(txobj.result.blockhash)
+{
 var params =[txobj.result.blockhash];
 var meth="getblock";
 var data = {"method":meth , "params":params};
@@ -60,7 +62,16 @@ else
 {
 res.send({"error":true,"result":blockobj.error});
 }
-
+}
+else
+{
+var ret = {"message":{"height":"-","confirmations":"-","amount":txobj.result.amount,"status":txobj.result.status,"timestamp":txobj.result.time}};
+var sendmsg = await jslib.encryptData(ret, key);
+if(sendmsg.error)
+res.send(sendmsg);
+else
+res.send({"error":false,"result":sendmsg});
+}
 }
 }
 }
