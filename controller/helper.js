@@ -134,8 +134,8 @@ async function create(conf)
 {
 console.log("crtconf");
 const configSchema = "CREATE TABLE IF NOT EXISTS config (Username TEXT PRIMARY KEY,Password TEXT,Remotelogin TEXT DEFAULT 'true',Drive TEXT,Updt TEXT DEFAULT 'FALSE',Tor TEXT DEFAULT 'FALSE',addnode TEXT,bannode TEXT,Error INTEGER DEFAULT 0,Login INTEGER DEFAULT 0,Errormsg TEXT,Rescan TEXT DEFAULT 'FALSE',Reindex TEXT DEFAULT 'FALSE');";
-const transactionsSchema ="CREATE TABLE IF NOT EXISTS transactions (Fromadr TEXT,Txid TEXT PRIMARY KEY,Amount REAL,Type TEXT,Tmstmp INT);";
- try {
+const transactionsSchema ="CREATE TABLE IF NOT EXISTS transactions (Fromadr TEXT,Txid TEXT PRIMARY KEY,Amount REAL,Type TEXT,Tmstmp INT,Memo TEXT,Toadr TEXT);";
+try {
     await fs.writeFileSync(dbPath, "", { flag: 'wx' }, function (err) {
     if (err) throw err;
     console.log("It's saved!");
@@ -539,9 +539,9 @@ return new Promise(async (resolve, reject) => {
 try{
     const db = await new sqlite3.Database(dbPath, sqlite3.OPEN_READ_WRITE);
     var tmstmp = await Math.floor(Date.now() / 1000);
-    const stmt = await db.prepare('INSERT INTO transactions (Fromadr, Txid , Amount, Type, Tmstmp) VALUES (?, ?, ?, ?, ?)');
+    const stmt = await db.prepare('INSERT INTO transactions (Fromadr, Txid , Amount, Type, Tmstmp, Memo,Toadr) VALUES (?, ?, ?, ?, ?, ?, ?)');
     console.log(txn);
-    await stmt.run(txn.fromadr, txn.txid, txn.amt, txn.type, tmstmp);
+    await stmt.run(txn.fromadr, txn.txid, txn.amt, txn.type, tmstmp, txn.memo,txn.toadr);
     await stmt.finalize();
     await db.close();
     var message={error:false,message:"Success"};
