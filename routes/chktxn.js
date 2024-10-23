@@ -41,7 +41,7 @@ else
 if(txobj.result[0].status==="success")
 {
 var ttype = decobj.type;
-var obj = {"fromadr":decobj.fromadr, "txid":txobj.result[0].result.txid, "amt":decobj.amt, "type":ttype};
+var obj = {"fromadr":decobj.fromadr, "txid":txobj.result[0].result.txid, "amt":decobj.amt, "type":ttype, "memo":decobj.memo,"toadr":decobj.toadr};
 var rl = await jslib.newtxn(obj);
 var ret = {"message":"success","txid":txobj.result[0].result.txid};
 var sendmsg = await jslib.encryptData(ret, key);
