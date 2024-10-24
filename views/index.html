@@ -451,7 +451,7 @@ function formatBytes(a,b=2){if(!+a)return"0 Bytes";const c=0>b?0:b,d=Math.floor(
 
 function diskSize(siz)
 {
-$.get("http://nodecipher.local/settread", function(response) {
+$.get(location.protocol+"//"+location.host+'/settread', function(response) {
         // Extract the desired object from the response
          if(response.error)
              alert("Error - Can't fetch node settings , "+response.message);
@@ -460,7 +460,7 @@ $.get("http://nodecipher.local/settread", function(response) {
         var drive = response.message.drv;
         
         // Construct the URL for the second GET request using the extracted object
-        const secondUrl = 'http://nodecipher.local/diskread';
+        const secondUrl = location.protocol+"//"+location.host+'/diskread';
 
         // Second GET request
         $.get(secondUrl, function(secondResponse) {
