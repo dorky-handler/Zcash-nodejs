@@ -172,7 +172,7 @@ return new Promise((resolve, reject) => {
       }
     });
 
-    db1.get("SELECT Username, Password, Login FROM config WHERE Username = ?", [name], (err, row) => {
+    db1.get("SELECT Username, Password FROM config WHERE Username = ?", [name], (err, row) => {
       if (err) {
         console.error('Error querying database:', err.message);
         db1.close();
